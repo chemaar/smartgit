@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+
+	<bean id="queries"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations" value="classpath:/queries/queries.xml" />
+	</bean>
+
+	<bean id="QueryLoaderDAO" class="es.inf.uc3m.kr.smartgit.QueryLoaderDAO">
+		<property name="queries" ref="queries" />
+	</bean>
+
+
+</beans>
