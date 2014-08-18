@@ -5,13 +5,9 @@
 	<artifactId>smartgit-ds</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.2-SNAPSHOT</version>
-<!--
-	<properties>
-		<org.springframework.version>2.5</org.springframework.version>
-		<apache.jena.version>2.11.1</apache.jena.version>
-		<scala.version>2.8.0</scala.version>
-	</properties>
--->
+	<!-- <properties> <org.springframework.version>2.5</org.springframework.version> 
+		<apache.jena.version>2.11.1</apache.jena.version> <scala.version>2.8.0</scala.version> 
+		</properties> -->
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -24,7 +20,74 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.14</version>
 		</dependency>
-		
+
+		<!-- Google API -->
+
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client-android</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client-appengine</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client-gson</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client-jackson2</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-jackson</artifactId>
+			<version>1.15.0-rc</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client-java6</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client-protobuf</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client-xml</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-bigquery</artifactId>
+			<version>v2-rev159-1.19.0</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -34,6 +97,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -42,21 +106,10 @@
 				</configuration>
 			</plugin>
 
-			<!--
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>main.ValidatorAppServ</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-			</plugin>
--->
+			<!-- <plugin> <artifactId>maven-assembly-plugin</artifactId> <configuration> 
+				<archive> <manifest> <mainClass>main.ValidatorAppServ</mainClass> </manifest> 
+				</archive> <descriptorRefs> <descriptorRef>jar-with-dependencies</descriptorRef> 
+				</descriptorRefs> </configuration> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
