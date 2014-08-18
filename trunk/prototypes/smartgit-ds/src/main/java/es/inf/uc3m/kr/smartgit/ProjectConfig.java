@@ -32,7 +32,7 @@ public class ProjectConfig {
 							new InputStreamReader(BigQueryInstalledAuthDemo.class.getResourceAsStream(CLIENTSECRETS_LOCATION)));
 			return clientSecrets;
 		} catch (Exception e)  {
-			logger.error("Could not load clientsecrets.json"); //$NON-NLS-1$
+			logger.error("Could not load "+CLIENTSECRETS_LOCATION); //$NON-NLS-1$
 			e.printStackTrace();
 		}
 		return clientSecrets;
