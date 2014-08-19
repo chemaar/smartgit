@@ -1,4 +1,4 @@
-package es.inf.uc3m.kr.smartgit;
+package es.inf.uc3m.kr.smartgit.dumpers;
 
 import java.io.IOException;
 import java.util.List;

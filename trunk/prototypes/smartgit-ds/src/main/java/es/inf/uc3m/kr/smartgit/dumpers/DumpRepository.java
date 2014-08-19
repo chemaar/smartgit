@@ -1,4 +1,4 @@
-package es.inf.uc3m.kr.smartgit;
+package es.inf.uc3m.kr.smartgit.dumpers;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +11,10 @@ import java.util.Map;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.RepositoryService;
+
+import es.inf.uc3m.kr.smartgit.DumperSerializer;
+import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.RepositoryFields;
 
 public class DumpRepository implements GitHubDumper {
 

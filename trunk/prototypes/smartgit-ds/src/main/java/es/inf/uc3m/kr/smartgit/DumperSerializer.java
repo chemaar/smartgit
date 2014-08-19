@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
+import es.inf.uc3m.kr.smartgit.dumpers.GitHubDumper;
+
 public class DumperSerializer {
 
 	public static final String SEPARATOR = ";";
