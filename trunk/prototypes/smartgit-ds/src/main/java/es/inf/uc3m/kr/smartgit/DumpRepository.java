@@ -1,35 +1,28 @@
 package es.inf.uc3m.kr.smartgit;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
-public class DumpRepository {
+public class DumpRepository implements GitHubDumper {
 
 	RepositoryService service;
-	GitHubClient client;
 
-	
 	public DumpRepository(){
-		this.client = GithubConnectionHelper.createConnection();
-		this.service = new RepositoryService(client);
+
 	}
 	
 	public List<Map<Enum,String>> createDump() throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		List<Repository> repos = this.service.getRepositories();
+		List<Repository> repos = ((RepositoryService) getService()).getRepositories();
 		for(Repository repo: repos){
 			//In case of needing memory, directly write here to a file...
 			csvData.add(describe(repo));
@@ -37,8 +30,7 @@ public class DumpRepository {
 		return csvData;
 	}
 
-	private Map<Enum,String> describe(
-			Repository repository) {
+	private Map<Enum,String> describe(Repository repository) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
 		values.put(RepositoryFields.ID, String.valueOf(repository.getId()));
 		values.put(RepositoryFields.Name, repository.getName());
@@ -53,28 +45,32 @@ public class DumpRepository {
 		values.put(RepositoryFields.Watchers, String.valueOf(repository.getWatchers()));
 		values.put(RepositoryFields.Forks, String.valueOf(repository.getForks()));
 		values.put(RepositoryFields.Owner_ID, String.valueOf(repository.getOwner().getId()));
+		values.put(RepositoryFields.Owner_Login, String.valueOf(repository.getOwner().getLogin()));
 		return values;
 	}
 	
+	@Override
+	public GitHubService getService() {
+		if(this.service == null){
+			this.service = new RepositoryService(GithubConnectionHelper.createConnection());
+		}
+		return this.service;
+	}
+
+	@Override
+	public Enum[] getFields() {
+		return RepositoryFields.values();
+	}
+
+	@Override
+	public List<Map<Enum, String>> createDump(Map<String, String> params)
+			throws IOException {
+		return new LinkedList<>();
+	}
+	
 	public static void main(String []args) throws IOException{
+		GitHubDumper dumper = new DumpRepository();
 		String DUMP_FILE="repo-dump.txt";
-		String SEPARATOR = ";";
-		PrintWriter pw = new PrintWriter(new File(DUMP_FILE));
-		DumpRepository dumper = new DumpRepository();
-		List<Map<Enum, String>> repositories = dumper.createDump();
-		RepositoryFields[] fields = RepositoryFields.values();
-		//1-Create header
-		for(int i = 0; i<fields.length;i++){
-			pw.print(fields[i].name()+SEPARATOR);
-		}
-		//2-Serialize fields
-		pw.println("");
-		for(Map<Enum, String> repo:repositories){
-			for(int i = 0; i<fields.length;i++){
-				pw.print(repo.get(fields[i])+SEPARATOR);
-			}
-			pw.println("");
-		}
-		pw.close();
+		DumperSerializer.serialize(dumper, DUMP_FILE);
 	}
 }

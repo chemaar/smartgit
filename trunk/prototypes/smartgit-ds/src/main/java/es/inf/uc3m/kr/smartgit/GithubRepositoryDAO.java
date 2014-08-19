@@ -150,7 +150,6 @@ public class GithubRepositoryDAO {
 		System.out.println("Followers: "+user.getFollowers()); 
 		System.out.println("Following: "+user.getFollowing()); 
 		System.out.println("Gravatar id: "+user.getGravatarId()); 
-
 		System.out.println("Public Repos: "+user.getPublicRepos()); 
 		System.out.println("Private Repos: "+user.getTotalPrivateRepos()); 
 		

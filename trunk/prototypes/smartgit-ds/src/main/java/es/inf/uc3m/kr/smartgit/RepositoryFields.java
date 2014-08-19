@@ -13,5 +13,6 @@ public enum RepositoryFields {
 	Size,
 	Watchers,
 	Forks,
-	Owner_ID
+	Owner_ID, 
+	Owner_Login
 }
