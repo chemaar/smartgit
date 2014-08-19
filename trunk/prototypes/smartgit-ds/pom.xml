@@ -5,8 +5,8 @@
 	<artifactId>smartgit-ds</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.2-SNAPSHOT</version>
-	<properties> 
-		<org.springframework.version>2.5</org.springframework.version> 
+	<properties>
+		<org.springframework.version>2.5</org.springframework.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -21,13 +21,13 @@
 			<version>1.2.14</version>
 		</dependency>
 
-<!--Spring -->
+		<!--Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
-		
+
 		<!-- Google API -->
 
 		<dependency>
@@ -93,7 +93,12 @@
 			<artifactId>google-api-services-bigquery</artifactId>
 			<version>v2-rev159-1.19.0</version>
 		</dependency>
-
+		<!-- Github API -->
+		<dependency>
+			<groupId>org.eclipse.mylyn.github</groupId>
+			<artifactId>org.eclipse.egit.github.core</artifactId>
+			<version>2.1.5</version>
+		</dependency>
 
 	</dependencies>
 
