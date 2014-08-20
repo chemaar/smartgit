@@ -9,19 +9,22 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Download;
 import org.eclipse.egit.github.core.IRepositoryIdProvider;
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.Label;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.DownloadService;
 import org.eclipse.egit.github.core.service.GitHubService;
+import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 
-public class DumpDownloads implements GitHubDumper {
-	protected static Logger logger = Logger.getLogger(DumpDownloads.class);
-	DownloadService service;
+public class DumpIssues implements GitHubDumper {
+	protected static Logger logger = Logger.getLogger(DumpIssues.class);
+	IssueService service;
 
-	public DumpDownloads(){
+	public DumpIssues(){
 	}
 
 
@@ -29,28 +32,39 @@ public class DumpDownloads implements GitHubDumper {
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
 		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
-		List<Download> downloads = ((DownloadService) getService()).getDownloads(repo);
+		List<Issue> issues = ((IssueService) getService()).getIssues(repo, new HashMap<String,String>());
 		long repoID = ((Repository)repo).getId();
-		for(Download download: downloads){
+		for(Issue issue: issues){
 			//In case of needing memory, directly write here to a file...
-			csvData.add(describe(download,repoID));
+			csvData.add(describe(issue,repoID));
 		}
 		return csvData;
 	}
 
-	private Map<Enum,String> describe(Download download, long id) {
+	private Map<Enum,String> describe(Issue issue, long id) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
-		values.put(DownloadFields.ID_Repo,""+id); 
-		values.put(DownloadFields.ID,""+download.getId());
-		values.put(DownloadFields.Name,download.getName());
-		values.put(DownloadFields.Description,download.getDescription());
-		values.put(DownloadFields.URL,download.getUrl());
-		values.put(DownloadFields.Content_Type,download.getContentType());
-		values.put(DownloadFields.Count,""+download.getDownloadCount());
-		values.put(DownloadFields.HTML_URL,download.getHtmlUrl());
-		values.put(DownloadFields.Size,""+download.getSize());
-		
-
+		values.put(IssueFields.ID_Repo,""+id); 
+		values.put(IssueFields.ID,""+issue.getId());
+		values.put(IssueFields.Title,issue.getTitle());
+		values.put(IssueFields.Creator,issue.getUser().getLogin());
+		values.put(IssueFields.Assignee,issue.getAssignee().getLogin());
+		values.put(IssueFields.URL,issue.getUrl());
+		values.put(IssueFields.Body,issue.getBody());
+		String labelsAsStr = "[";
+		for(Label label:issue.getLabels()){
+			String labelAsStr = 
+					"("+label.getColor()+","+label.getName()+","+label.getUrl()+")";
+			labelsAsStr+=labelAsStr+",";
+		}
+		labelsAsStr+="]";
+		//[(1,3,4),()]
+		values.put(IssueFields.Labels,labelsAsStr);
+		values.put(IssueFields.Comments,""+issue.getComments());
+		values.put(IssueFields.Milestone,""+(issue.getMilestone()!=null?issue.getMilestone().getNumber():null));
+		values.put(IssueFields.State,issue.getState());
+		values.put(IssueFields.Created,(issue.getCreatedAt()!=null?issue.getCreatedAt().toString():null));
+		values.put(IssueFields.Closed,(issue.getClosedAt()!=null?issue.getClosedAt().toString():null));
+		values.put(IssueFields.Updated,(issue.getUpdatedAt()!=null?issue.getUpdatedAt().toString():null));
 		return values;
 	}
 
@@ -58,22 +72,22 @@ public class DumpDownloads implements GitHubDumper {
 	@Override
 	public GitHubService getService() {
 		if(this.service == null){
-			this.service = new DownloadService(GithubConnectionHelper.createConnection());
+			this.service = new IssueService(GithubConnectionHelper.createConnection());
 		}
 		return this.service;
 	}
 
 	@Override
 	public Enum[] getFields() {
-		return DownloadFields.values();
+		return IssueFields.values();
 	}
 
 	
 	public static void main(String []args) throws IOException{
-		String DUMP_FILE="downloads-dump";
+		String DUMP_FILE="issues-dump";
 		DumpRepository dumpRepository = new DumpRepository();
 		RepositoryService repositoryService = (RepositoryService) dumpRepository.getService();
-		GitHubDumper dumper = new DumpDownloads();
+		GitHubDumper dumper = new DumpIssues();
 		Map<String, Object> params = new HashMap<String,Object>();
 		for(Repository repo:repositoryService.getRepositories()){
 			logger.info("Processing repository with ID= "+repo.getId());
