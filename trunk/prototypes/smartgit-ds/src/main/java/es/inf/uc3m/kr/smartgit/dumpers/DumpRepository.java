@@ -71,7 +71,13 @@ public class DumpRepository implements GitHubDumper {
 	@Override
 	public List<Map<Enum, String>> createDump(Map<String, Object> params)
 			throws IOException {
-		return new LinkedList<>();
+		List<Map<Enum,String>> csvData = new LinkedList<>();
+		List<Repository> repos = ((RepositoryService) getService()).
+				getRepositories((String)params.get(GitHubDumper.USER_LOGIN_PARAM));
+		for(Repository repo: repos){
+			csvData.add(describe(repo));
+		}
+		return csvData;
 	}
 	
 	public static void main(String []args) throws IOException{

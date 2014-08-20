@@ -36,7 +36,7 @@ public class AggregatedDumper {
 	
 	}
 
-	private static void genericDump(String file,List<Repository> repositories,GitHubDumper dumper) throws IOException {
+	public static void genericDump(String file,List<Repository> repositories,GitHubDumper dumper) throws IOException {
 		Map<String, Object> params = new HashMap<String,Object>();
 		for(Repository repo:repositories){
 			params.put(GitHubDumper.REPO_CONSTANT_PARAM,repo);
@@ -46,7 +46,7 @@ public class AggregatedDumper {
 	}
 	
 
-	private static void dumpMilestones(String file, String state,List<Repository> repositories) throws IOException {
+	static void dumpMilestones(String file, String state,List<Repository> repositories) throws IOException {
 		//String state = "all"; //open, closed, all
 		GitHubDumper dumper = new DumpMilestones();
 		Map<String, Object> params = new HashMap<String,Object>();
@@ -59,7 +59,7 @@ public class AggregatedDumper {
 	}
 
 
-	private static void dumpUsers(String file, String login) throws IOException {
+	public static void dumpUsers(String file, String login) throws IOException {
 		GitHubDumper dumper = new DumpUser();
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put(GitHubDumper.USER_LOGIN_PARAM,login);
