@@ -20,7 +20,7 @@ import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 
 public class DumpMilestones implements GitHubDumper {
-	
+
 	protected static Logger logger = Logger.getLogger(DumpMilestones.class);
 	MilestoneService service;
 
@@ -28,17 +28,22 @@ public class DumpMilestones implements GitHubDumper {
 	}
 
 
-	
+
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
 		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
-		List<Milestone> milestones = ((MilestoneService) getService()).getMilestones(repo, 
-				(String) params.get(MILESTONE_STATE_CONSTANT_PARAM));
-		long repoID = ((Repository)repo).getId();
-		for(Milestone milestone: milestones){
-			//In case of needing memory, directly write here to a file...
-			csvData.add(describe(milestone,repoID));
+		try{
+			List<Milestone> milestones = ((MilestoneService) getService()).getMilestones(repo, 
+					(String) params.get(MILESTONE_STATE_CONSTANT_PARAM));
+			long repoID = ((Repository)repo).getId();
+			for(Milestone milestone: milestones){
+				//In case of needing memory, directly write here to a file...
+				csvData.add(describe(milestone,repoID));
+			}
+		}catch(org.eclipse.egit.github.core.client.RequestException e){
+			logger.error(e);
 		}
+
 		return csvData;
 	}
 
@@ -58,7 +63,7 @@ public class DumpMilestones implements GitHubDumper {
 		return values;
 	}
 
-	
+
 	@Override
 	public GitHubService getService() {
 		if(this.service == null){
@@ -72,7 +77,7 @@ public class DumpMilestones implements GitHubDumper {
 		return MilestoneFields.values();
 	}
 
-	
+
 	public static void main(String []args) throws IOException{
 		String DUMP_FILE="milestones-dump";
 		String state = "all"; //open, closed, all
@@ -87,7 +92,7 @@ public class DumpMilestones implements GitHubDumper {
 			DumperSerializer.serialize(dumper, DUMP_FILE+"-"+repo.getId()+"-"+state+".txt",params);
 			params.clear();
 		}
-	
+
 
 	}
 

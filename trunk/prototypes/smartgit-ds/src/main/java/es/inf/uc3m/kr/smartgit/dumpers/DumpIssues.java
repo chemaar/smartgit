@@ -32,11 +32,15 @@ public class DumpIssues implements GitHubDumper {
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
 		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
+		try{
 		List<Issue> issues = ((IssueService) getService()).getIssues(repo, new HashMap<String,String>());
 		long repoID = ((Repository)repo).getId();
 		for(Issue issue: issues){
 			//In case of needing memory, directly write here to a file...
 			csvData.add(describe(issue,repoID));
+		}
+		}catch(org.eclipse.egit.github.core.client.RequestException e){
+			logger.error(e);
 		}
 		return csvData;
 	}
@@ -46,8 +50,8 @@ public class DumpIssues implements GitHubDumper {
 		values.put(IssueFields.ID_Repo,""+id); 
 		values.put(IssueFields.ID,""+issue.getId());
 		values.put(IssueFields.Title,issue.getTitle());
-		values.put(IssueFields.Creator,issue.getUser().getLogin());
-		values.put(IssueFields.Assignee,issue.getAssignee().getLogin());
+		values.put(IssueFields.Creator,(issue.getUser()!=null?issue.getUser().getLogin():null));
+		values.put(IssueFields.Assignee,(issue.getAssignee()!=null?issue.getAssignee().getLogin():null));
 		values.put(IssueFields.URL,issue.getUrl());
 		values.put(IssueFields.Body,issue.getBody());
 		String labelsAsStr = "[";

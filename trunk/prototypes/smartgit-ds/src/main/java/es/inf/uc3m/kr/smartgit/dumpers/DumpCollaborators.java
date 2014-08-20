@@ -38,6 +38,7 @@ public class DumpCollaborators extends DumpUser {
 		for(User collaborator: collaborators){
 			//In case of needing memory, directly write here to a file...
 			//Collaborator only returns some fields, full description using the user service
+			//FIXME: if there is a lot of collaborators: Repository access blocked (403)
 			User user = ((UserService) super.getService()).getUser(collaborator.getLogin());
 			csvData.add(describe(user,repoID));
 		}

@@ -44,7 +44,7 @@ public class DumpRepositoryCommit implements GitHubDumper {
 		Map<Enum,String> values = new HashMap<Enum,String>();
 		values.put(CommitFields.ID_Repo,""+id); 
 		values.put(CommitFields.SHA,commit.getSha());
-		values.put(CommitFields.Login,commit.getCommitter().getLogin());
+		values.put(CommitFields.Login,(commit.getCommitter()!=null?commit.getCommitter().getLogin():null));
 		values.put(CommitFields.URL,commit.getUrl());
 		values.put(CommitFields.Files,""+(commit.getFiles()!=null?commit.getFiles().size():null));
 		values.put(CommitFields.SHA_COMMIT,commit.getCommit().getSha());

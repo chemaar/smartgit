@@ -1,6 +1,7 @@
 package es.inf.uc3m.kr.smartgit.dumpers;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -48,8 +49,8 @@ public class SeedAggregatedDumper {
 			DumperSerializer.serialize(dumpRepository, dirName+userLogin+"-repositories-dump.txt",params);
 			//FIXME: This generates a file per user, all users in just one file
 			//2-Users
-			logger.info("\t...description of user with login: "+userLogin);
-			AggregatedDumper.dumpUsers(dirName+userLogin+"-dump.txt", userLogin);
+			//logger.info("\t...description of user with login: "+userLogin);
+			//AggregatedDumper.dumpUsers(dirName+userLogin+"-dump.txt", userLogin);
 			//3-Collaborators
 			logger.info("\t...collaborators of user with login: "+userLogin);
 		
@@ -80,6 +81,16 @@ public class SeedAggregatedDumper {
 		logger.info("End time "+GregorianCalendar.getInstance().getTime().toString());
 		long end = System.currentTimeMillis();
 		logger.info("TIME OF PROCESSING: "+((end-start)/1000)+" seconds.");
+		//Describing all users
+		logger.info("Start time to describe users "+GregorianCalendar.getInstance().getTime().toString());
+		List<String> logins = Collections.list(UserLoginIDProperties.RESOURCE_BUNDLE.getKeys());
+		logger.info("Creating dump for: "+logins.size()+" users.");
+		GitHubDumper dumper = new DumpAllUsers();
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put(GitHubDumper.ALL_USER_LOGIN_PARAM,logins);
+		DumperSerializer.serialize(dumper, dirName+"all-users-dump",params);
+		logger.info("End time to describe users "+GregorianCalendar.getInstance().getTime().toString());
+
 
 	}
 
