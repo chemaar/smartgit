@@ -15,6 +15,7 @@ import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 
 public class DumpUser implements GitHubDumper {
 
+
 	UserService service;
 
 
@@ -29,7 +30,7 @@ public class DumpUser implements GitHubDumper {
 	
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		User user = ((UserService) getService()).getUser((String) params.get("login"));
+		User user = ((UserService) getService()).getUser((String) params.get(USER_LOGIN_PARAM));
 		if (user != null){
 			csvData.add(describe(user));
 		}
@@ -78,7 +79,7 @@ public class DumpUser implements GitHubDumper {
 		String login = "chemaar";
 		GitHubDumper dumper = new DumpUser();
 		Map<String, Object> params = new HashMap<String,Object>();
-		params.put("login",login);
+		params.put(USER_LOGIN_PARAM,login);
 		DumperSerializer.serialize(dumper, DUMP_FILE,params );
 
 	}

@@ -20,7 +20,6 @@ import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 
 public class DumpCollaborators extends DumpUser {
 
-	public static final String REPO_CONSTANT = "repo";
 	
 	CollaboratorService service;
 
@@ -32,7 +31,7 @@ public class DumpCollaborators extends DumpUser {
 	
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT);
+		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
 		List<User> collaborators = ((CollaboratorService) getService()).getCollaborators(repo);
 		long repoID = ((Repository)repo).getId();
 		for(User collaborator: collaborators){
@@ -78,7 +77,7 @@ public class DumpCollaborators extends DumpUser {
 		Map<String, Object> params = new HashMap<String,Object>();
 		for(Repository repo:repositoryService.getRepositories()){
 			System.out.println("Processing "+repo.getId());
-			params.put(REPO_CONSTANT,repo);
+			params.put(REPO_CONSTANT_PARAM,repo);
 			DumperSerializer.serialize(dumper, DUMP_FILE+"-"+repo.getId()+".txt",params);
 			params.clear();
 		}
