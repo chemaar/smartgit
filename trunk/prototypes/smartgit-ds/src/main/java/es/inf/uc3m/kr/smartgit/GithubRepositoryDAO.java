@@ -75,7 +75,7 @@ public class GithubRepositoryDAO {
 		System.out.println("Owner: "+repo.getOwner().getId()); 
 		List<User> collaborators = this.collaboratorService.getCollaborators(repo);
 		System.out.println("Number of collaborators: "+collaborators.size()); 
-		
+	
 		//Describe commits
 		List<RepositoryCommit> commits = this.commitService.getCommits(repo);
 		System.out.println("Number of commits: "+commits.size()); 

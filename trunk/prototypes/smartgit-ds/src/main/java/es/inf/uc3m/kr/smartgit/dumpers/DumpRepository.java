@@ -14,7 +14,6 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 
 import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
-import es.inf.uc3m.kr.smartgit.RepositoryFields;
 
 public class DumpRepository implements GitHubDumper {
 
@@ -67,7 +66,7 @@ public class DumpRepository implements GitHubDumper {
 	}
 
 	@Override
-	public List<Map<Enum, String>> createDump(Map<String, String> params)
+	public List<Map<Enum, String>> createDump(Map<String, Object> params)
 			throws IOException {
 		return new LinkedList<>();
 	}

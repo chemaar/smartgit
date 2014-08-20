@@ -12,7 +12,6 @@ import org.eclipse.egit.github.core.service.UserService;
 
 import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
-import es.inf.uc3m.kr.smartgit.UserFields;
 
 public class DumpUser implements GitHubDumper {
 
@@ -28,21 +27,21 @@ public class DumpUser implements GitHubDumper {
 		return csvData;
 	}
 	
-	public List<Map<Enum,String>> createDump(Map<String, String> params) throws IOException{
+	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		User user = ((UserService) getService()).getUser(params.get("login"));
+		User user = ((UserService) getService()).getUser((String) params.get("login"));
 		if (user != null){
 			csvData.add(describe(user));
 		}
 		return csvData;
 	}
 
-	private Map<Enum,String> describe(User user) {
+	protected Map<Enum,String> describe(User user) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
 		values.put(UserFields.ID,""+user.getId()); 
 		values.put(UserFields.Login,user.getLogin()); 
 		values.put(UserFields.Name,user.getName()); 
-		values.put(UserFields.Created,user.getCreatedAt().toString()); 
+		values.put(UserFields.Created,(user.getCreatedAt()!=null)?user.getCreatedAt().toString():null); 
 		values.put(UserFields.Location,user.getLocation()); 
 		values.put(UserFields.Avatar,user.getAvatarUrl()); 
 		values.put(UserFields.Blog,user.getBlog()); 
@@ -78,7 +77,7 @@ public class DumpUser implements GitHubDumper {
 		String DUMP_FILE="user-dump.txt";
 		String login = "chemaar";
 		GitHubDumper dumper = new DumpUser();
-		Map<String, String> params = new HashMap<String,String>();
+		Map<String, Object> params = new HashMap<String,Object>();
 		params.put("login",login);
 		DumperSerializer.serialize(dumper, DUMP_FILE,params );
 

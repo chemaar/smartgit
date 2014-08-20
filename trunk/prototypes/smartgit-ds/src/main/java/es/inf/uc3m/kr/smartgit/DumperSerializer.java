@@ -18,7 +18,7 @@ public class DumperSerializer {
 		write(file, repositories, dumper.getFields());
 	}
 	
-	public static void serialize(GitHubDumper dumper, String file,Map<String,String> params) throws IOException{
+	public static void serialize(GitHubDumper dumper, String file,Map<String,Object> params) throws IOException{
 		List<Map<Enum, String>> repositories = dumper.createDump(params);
 		write(file, repositories, dumper.getFields());
 	}
