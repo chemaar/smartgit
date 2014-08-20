@@ -10,6 +10,7 @@ public interface GitHubDumper {
 
 	public static final String USER_LOGIN_PARAM = "login";
 	public static final String REPO_CONSTANT_PARAM = "repo";
+	public static final String MILESTONE_STATE_CONSTANT_PARAM = "state";
 	
 	public GitHubService getService();
 	public Enum[] getFields();
