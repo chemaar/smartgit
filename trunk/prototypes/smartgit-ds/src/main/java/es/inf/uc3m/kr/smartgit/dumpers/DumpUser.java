@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.UserService;
@@ -14,7 +15,7 @@ import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 
 public class DumpUser implements GitHubDumper {
-
+	protected static Logger logger = Logger.getLogger(DumpUser.class);
 
 	UserService service;
 
@@ -77,6 +78,7 @@ public class DumpUser implements GitHubDumper {
 	public static void main(String []args) throws IOException{
 		String DUMP_FILE="user-dump.txt";
 		String login = "chemaar";
+		logger.info("Creating dump for user with login: "+login);
 		GitHubDumper dumper = new DumpUser();
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put(USER_LOGIN_PARAM,login);

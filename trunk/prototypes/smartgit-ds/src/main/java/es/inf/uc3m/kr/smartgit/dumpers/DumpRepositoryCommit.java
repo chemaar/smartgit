@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.IRepositoryIdProvider;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryCommit;
@@ -17,6 +18,9 @@ import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 
 public class DumpRepositoryCommit implements GitHubDumper {
+	
+	protected static Logger logger = Logger.getLogger(DumpRepositoryCommit.class);
+	
 	CommitService service;
 
 	public DumpRepositoryCommit(){
@@ -75,7 +79,7 @@ public class DumpRepositoryCommit implements GitHubDumper {
 		GitHubDumper dumper = new DumpRepositoryCommit();
 		Map<String, Object> params = new HashMap<String,Object>();
 		for(Repository repo:repositoryService.getRepositories()){
-			System.out.println("Processing "+repo.getId());
+			logger.info("Processing repository with ID="+repo.getId());
 			params.put(REPO_CONSTANT_PARAM,repo);
 			DumperSerializer.serialize(dumper, DUMP_FILE+"-"+repo.getId()+".txt",params);
 			params.clear();

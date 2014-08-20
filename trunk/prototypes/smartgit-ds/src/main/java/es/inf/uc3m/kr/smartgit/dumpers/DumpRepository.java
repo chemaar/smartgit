@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.RepositoryService;
@@ -17,6 +18,8 @@ import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 
 public class DumpRepository implements GitHubDumper {
 
+	protected static Logger logger = Logger.getLogger(DumpRepository.class);
+	
 	RepositoryService service;
 
 	public DumpRepository(){
