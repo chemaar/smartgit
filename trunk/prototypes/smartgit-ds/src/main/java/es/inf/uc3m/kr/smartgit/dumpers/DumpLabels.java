@@ -25,21 +25,28 @@ public class DumpLabels implements GitHubDumper {
 	}
 
 
-	
+
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
-		List<Label> labels = ((LabelService) getService()).getLabels(repo);
-		long repoID = ((Repository)repo).getId();
-		for(Label label: labels){
-			//In case of needing memory, directly write here to a file...
-			csvData.add(describe(label,repoID));
+		try{
+			IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
+			List<Label> labels = ((LabelService) getService()).getLabels(repo);
+			long repoID = ((Repository)repo).getId();
+			for(Label label: labels){
+				//In case of needing memory, directly write here to a file...
+				csvData.add(describe(label,repoID));
+			}
+		}catch(Exception e){
+			logger.error(e);
+			throw e;
 		}
+
 		return csvData;
 	}
 
 	private Map<Enum,String> describe(Label label, long id) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
+		values.put(LabelFields.Type, LabelFields.Label.name());
 		values.put(LabelFields.ID_Repo,""+id); 
 		values.put(LabelFields.Name,label.getName());
 		values.put(LabelFields.Color,label.getColor());
@@ -47,7 +54,7 @@ public class DumpLabels implements GitHubDumper {
 		return values;
 	}
 
-	
+
 	@Override
 	public GitHubService getService() {
 		if(this.service == null){
@@ -61,7 +68,7 @@ public class DumpLabels implements GitHubDumper {
 		return LabelFields.values();
 	}
 
-	
+
 	public static void main(String []args) throws IOException{
 		String DUMP_FILE="labels-dump";
 		DumpRepository dumpRepository = new DumpRepository();
@@ -74,7 +81,7 @@ public class DumpLabels implements GitHubDumper {
 			DumperSerializer.serialize(dumper, DUMP_FILE+"-"+repo.getId()+".txt",params);
 			params.clear();
 		}
-	
+
 
 	}
 

@@ -31,18 +31,25 @@ public class DumpAllUsers implements GitHubDumper {
 	
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		List<String> allUserLogins = (List<String>) params.get(ALL_USER_LOGIN_PARAM);
-		for(String login:allUserLogins){
-			User user = ((UserService) getService()).getUser(login);
-			if (user != null){
-				csvData.add(describe(user));
+		try{
+			List<String> allUserLogins = (List<String>) params.get(ALL_USER_LOGIN_PARAM);
+			for(String login:allUserLogins){
+				User user = ((UserService) getService()).getUser(login);
+				if (user != null){
+					csvData.add(describe(user));
+				}
 			}
+		}catch(Exception e){
+			logger.error(e);
+			throw e;
 		}
+	
 		return csvData;
 	}
 
 	protected Map<Enum,String> describe(User user) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
+		values.put(UserFields.Type, UserFields.User.name());
 		values.put(UserFields.ID,""+user.getId()); 
 		values.put(UserFields.Login,user.getLogin()); 
 		values.put(UserFields.Name,user.getName()); 

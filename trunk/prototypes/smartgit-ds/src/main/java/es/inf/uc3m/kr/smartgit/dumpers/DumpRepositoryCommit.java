@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.egit.github.core.Commit;
+import org.eclipse.egit.github.core.CommitUser;
 import org.eclipse.egit.github.core.IRepositoryIdProvider;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryCommit;
@@ -18,46 +20,69 @@ import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 
 public class DumpRepositoryCommit implements GitHubDumper {
-	
+
 	protected static Logger logger = Logger.getLogger(DumpRepositoryCommit.class);
-	
+
 	CommitService service;
 
 	public DumpRepositoryCommit(){
 	}
 
 
-	
+
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
-		List<RepositoryCommit> commits = ((CommitService) getService()).getCommits(repo);
-		long repoID = ((Repository)repo).getId();
-		for(RepositoryCommit commit: commits){
-			//In case of needing memory, directly write here to a file...
-			csvData.add(describe(commit,repoID));
+		try{
+			IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
+			List<RepositoryCommit> commits = ((CommitService) getService()).getCommits(repo);
+			long repoID = ((Repository)repo).getId();
+			for(RepositoryCommit commit: commits){
+				//In case of needing memory, directly write here to a file...
+				csvData.add(describe(commit,repoID));
+			}
+		}catch(Exception e){
+			logger.error(e);
+			throw e;
 		}
+
 		return csvData;
 	}
 
 	private Map<Enum,String> describe(RepositoryCommit commit, long id) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
+		values.put(CommitFields.Type, CommitFields.Commit.name());
 		values.put(CommitFields.ID_Repo,""+id); 
 		values.put(CommitFields.SHA,commit.getSha());
 		values.put(CommitFields.Login,(commit.getCommitter()!=null?commit.getCommitter().getLogin():null));
 		values.put(CommitFields.URL,commit.getUrl());
 		values.put(CommitFields.Files,""+(commit.getFiles()!=null?commit.getFiles().size():null));
-		values.put(CommitFields.SHA_COMMIT,commit.getCommit().getSha());
-		values.put(CommitFields.Email,commit.getCommit().getAuthor().getEmail());
-		values.put(CommitFields.Name,commit.getCommit().getAuthor().getName());
-		values.put(CommitFields.Date,commit.getCommit().getAuthor().getDate().toString());
-		values.put(CommitFields.N_Comments,""+commit.getCommit().getCommentCount());
-		values.put(CommitFields.Message,commit.getCommit().getMessage());
-		values.put(CommitFields.URL_Commit,commit.getCommit().getUrl());
+		Commit commitValue = commit.getCommit();
+		if(commitValue !=null){
+			values.put(CommitFields.SHA_COMMIT,commitValue.getSha());
+			CommitUser author = commitValue.getAuthor();
+			if(author!=null){
+				values.put(CommitFields.Email,author.getEmail());
+				values.put(CommitFields.Name,author.getName());
+				values.put(CommitFields.Date,(author.getDate()!=null?author.getDate().toString():null));
+			}else{
+				values.put(CommitFields.Email,null);
+				values.put(CommitFields.Name,null);
+				values.put(CommitFields.Date,null);
+			}
+			values.put(CommitFields.N_Comments,""+commitValue.getCommentCount());
+			values.put(CommitFields.Message,commitValue.getMessage());
+			values.put(CommitFields.URL_Commit,commitValue.getUrl());
+		}else{
+			//Is it necessary?
+
+		}
+
+
+
 		return values;
 	}
 
-	
+
 	@Override
 	public GitHubService getService() {
 		if(this.service == null){
@@ -71,7 +96,7 @@ public class DumpRepositoryCommit implements GitHubDumper {
 		return CommitFields.values();
 	}
 
-	
+
 	public static void main(String []args) throws IOException{
 		String DUMP_FILE="commits-dump";
 		DumpRepository dumpRepository = new DumpRepository();
@@ -84,7 +109,7 @@ public class DumpRepositoryCommit implements GitHubDumper {
 			DumperSerializer.serialize(dumper, DUMP_FILE+"-"+repo.getId()+".txt",params);
 			params.clear();
 		}
-	
+
 
 	}
 

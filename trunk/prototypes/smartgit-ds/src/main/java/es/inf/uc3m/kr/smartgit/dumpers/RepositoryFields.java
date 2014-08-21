@@ -14,5 +14,5 @@ public enum RepositoryFields {
 	Watchers,
 	Forks,
 	Owner_ID, 
-	Owner_Login
+	Owner_Login, Type, Repository
 }

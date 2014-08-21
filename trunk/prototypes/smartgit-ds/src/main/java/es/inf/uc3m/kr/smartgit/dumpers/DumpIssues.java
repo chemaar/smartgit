@@ -28,25 +28,27 @@ public class DumpIssues implements GitHubDumper {
 	}
 
 
-	
+
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
 		try{
-		List<Issue> issues = ((IssueService) getService()).getIssues(repo, new HashMap<String,String>());
-		long repoID = ((Repository)repo).getId();
-		for(Issue issue: issues){
-			//In case of needing memory, directly write here to a file...
-			csvData.add(describe(issue,repoID));
-		}
-		}catch(org.eclipse.egit.github.core.client.RequestException e){
+			IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
+			List<Issue> issues = ((IssueService) getService()).getIssues(repo, new HashMap<String,String>());
+			long repoID = ((Repository)repo).getId();
+			for(Issue issue: issues){
+				//In case of needing memory, directly write here to a file...
+				csvData.add(describe(issue,repoID));
+			}
+		}catch(Exception e){
 			logger.error(e);
+			throw e;
 		}
 		return csvData;
 	}
 
 	private Map<Enum,String> describe(Issue issue, long id) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
+		values.put(IssueFields.Type, IssueFields.Issue.name());
 		values.put(IssueFields.ID_Repo,""+id); 
 		values.put(IssueFields.ID,""+issue.getId());
 		values.put(IssueFields.Title,issue.getTitle());
@@ -55,13 +57,14 @@ public class DumpIssues implements GitHubDumper {
 		values.put(IssueFields.URL,issue.getUrl());
 		values.put(IssueFields.Body,issue.getBody());
 		String labelsAsStr = "[";
-		for(Label label:issue.getLabels()){
-			String labelAsStr = 
-					"("+label.getColor()+","+label.getName()+","+label.getUrl()+")";
-			labelsAsStr+=labelAsStr+",";
+		if(issue.getLabels()!=null){
+			for(Label label:issue.getLabels()){
+				String labelAsStr = 
+						"("+label.getColor()+","+label.getName()+","+label.getUrl()+")";
+				labelsAsStr+=labelAsStr+",";
+			}
 		}
 		labelsAsStr+="]";
-		//[(1,3,4),()]
 		values.put(IssueFields.Labels,labelsAsStr);
 		values.put(IssueFields.Comments,""+issue.getComments());
 		values.put(IssueFields.Milestone,""+(issue.getMilestone()!=null?issue.getMilestone().getNumber():null));
@@ -72,7 +75,7 @@ public class DumpIssues implements GitHubDumper {
 		return values;
 	}
 
-	
+
 	@Override
 	public GitHubService getService() {
 		if(this.service == null){
@@ -86,7 +89,7 @@ public class DumpIssues implements GitHubDumper {
 		return IssueFields.values();
 	}
 
-	
+
 	public static void main(String []args) throws IOException{
 		String DUMP_FILE="issues-dump";
 		DumpRepository dumpRepository = new DumpRepository();
@@ -99,7 +102,7 @@ public class DumpIssues implements GitHubDumper {
 			DumperSerializer.serialize(dumper, DUMP_FILE+"-"+repo.getId()+".txt",params);
 			params.clear();
 		}
-	
+
 
 	}
 

@@ -19,28 +19,34 @@ import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 public class DumpRepository implements GitHubDumper {
 
 	protected static Logger logger = Logger.getLogger(DumpRepository.class);
-	
+
 	RepositoryService service;
 
 	public DumpRepository(){
 
 	}
-	
+
 	public List<Map<Enum,String>> createDump() throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		List<Repository> repos = ((RepositoryService) getService()).getRepositories();
-		for(Repository repo: repos){
-			//In case of needing memory, directly write here to a file...
-			csvData.add(describe(repo));
+		try{
+			List<Repository> repos = ((RepositoryService) getService()).getRepositories();
+			for(Repository repo: repos){
+				//In case of needing memory, directly write here to a file...
+				csvData.add(describe(repo));
+			}
+		}catch(Exception e){
+			logger.error(e);
+			throw e;
 		}
 		return csvData;
 	}
 
 	private Map<Enum,String> describe(Repository repository) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
+		values.put(RepositoryFields.Type, RepositoryFields.Repository.name());
 		values.put(RepositoryFields.ID, String.valueOf(repository.getId()));
 		values.put(RepositoryFields.Name, repository.getName());
-		values.put(RepositoryFields.Created, repository.getCreatedAt().toString());
+		values.put(RepositoryFields.Created, (repository.getCreatedAt()!=null?repository.getCreatedAt().toString():null));
 		values.put(RepositoryFields.Description, repository.getDescription());
 		values.put(RepositoryFields.Homepage, repository.getHomepage());
 		values.put(RepositoryFields.HTML_URL, repository.getHtmlUrl());
@@ -50,11 +56,11 @@ public class DumpRepository implements GitHubDumper {
 		values.put(RepositoryFields.Size, String.valueOf(repository.getSize()));
 		values.put(RepositoryFields.Watchers, String.valueOf(repository.getWatchers()));
 		values.put(RepositoryFields.Forks, String.valueOf(repository.getForks()));
-		values.put(RepositoryFields.Owner_ID, String.valueOf(repository.getOwner().getId()));
-		values.put(RepositoryFields.Owner_Login, String.valueOf(repository.getOwner().getLogin()));
+		values.put(RepositoryFields.Owner_ID, (repository.getOwner()!=null?String.valueOf(repository.getOwner().getId()):null));
+		values.put(RepositoryFields.Owner_Login, (repository.getOwner()!=null?String.valueOf(repository.getOwner().getLogin()):null));
 		return values;
 	}
-	
+
 	@Override
 	public GitHubService getService() {
 		if(this.service == null){
@@ -72,14 +78,19 @@ public class DumpRepository implements GitHubDumper {
 	public List<Map<Enum, String>> createDump(Map<String, Object> params)
 			throws IOException {
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		List<Repository> repos = ((RepositoryService) getService()).
-				getRepositories((String)params.get(GitHubDumper.USER_LOGIN_PARAM));
-		for(Repository repo: repos){
-			csvData.add(describe(repo));
+		try{
+			List<Repository> repos = ((RepositoryService) getService()).
+					getRepositories((String)params.get(GitHubDumper.USER_LOGIN_PARAM));
+			for(Repository repo: repos){
+				csvData.add(describe(repo));
+			}
+		}catch(Exception e){
+			logger.error(e);
+			throw e;
 		}
 		return csvData;
 	}
-	
+
 	public static void main(String []args) throws IOException{
 		GitHubDumper dumper = new DumpRepository();
 		String DUMP_FILE="repo-dump.txt";

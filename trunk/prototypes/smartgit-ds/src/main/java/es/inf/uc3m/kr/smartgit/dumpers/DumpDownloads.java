@@ -28,18 +28,25 @@ public class DumpDownloads implements GitHubDumper {
 	
 	public List<Map<Enum,String>> createDump(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
-		IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
-		List<Download> downloads = ((DownloadService) getService()).getDownloads(repo);
-		long repoID = ((Repository)repo).getId();
-		for(Download download: downloads){
-			//In case of needing memory, directly write here to a file...
-			csvData.add(describe(download,repoID));
+		try{
+			IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
+			List<Download> downloads = ((DownloadService) getService()).getDownloads(repo);
+			long repoID = ((Repository)repo).getId();
+			for(Download download: downloads){
+				//In case of needing memory, directly write here to a file...
+				csvData.add(describe(download,repoID));
+			}
+		}catch(Exception e){
+			logger.error(e);
+			throw e;
 		}
+		
 		return csvData;
 	}
 
 	private Map<Enum,String> describe(Download download, long id) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
+		values.put(DownloadFields.Type, DownloadFields.Download.name());
 		values.put(DownloadFields.ID_Repo,""+id); 
 		values.put(DownloadFields.ID,""+download.getId());
 		values.put(DownloadFields.Name,download.getName());
@@ -49,9 +56,7 @@ public class DumpDownloads implements GitHubDumper {
 		values.put(DownloadFields.Count,""+download.getDownloadCount());
 		values.put(DownloadFields.HTML_URL,download.getHtmlUrl());
 		values.put(DownloadFields.Size,""+download.getSize());
-		
-
-		return values;
+			return values;
 	}
 
 	
