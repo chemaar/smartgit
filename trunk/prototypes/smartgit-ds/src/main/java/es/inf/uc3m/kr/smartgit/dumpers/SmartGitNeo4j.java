@@ -166,7 +166,11 @@ public class SmartGitNeo4j {
 				
 				//FIXME: Create links
 				//User->repos
-				//repos->collaborators
+				//repos->issues
+				//repos->commits
+				//repos->milestones
+				//repos->downloads
+				//repos->users (collaborators)
 				//...
 				
 				logger.info("End processing user with login: "+userLogin);
