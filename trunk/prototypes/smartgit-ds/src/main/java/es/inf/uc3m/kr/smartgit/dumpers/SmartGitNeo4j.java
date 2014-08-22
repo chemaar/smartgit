@@ -45,7 +45,7 @@ public class SmartGitNeo4j {
 	public void setUp() throws IOException{
 		FileUtils.deleteRecursively( new File( SMARTGIT_DB ) );
 		this.graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( SMARTGIT_DB );
-		try ( Transaction tx = graphDb.beginTx() ){
+				try ( Transaction tx = graphDb.beginTx() ){
 			Node github = this.graphDb.createNode();
 			this.smartgitNodeId = github.getId();
 			tx.success();

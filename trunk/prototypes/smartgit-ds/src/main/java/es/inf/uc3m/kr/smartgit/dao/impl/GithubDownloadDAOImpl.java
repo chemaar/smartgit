@@ -18,20 +18,21 @@ import org.eclipse.egit.github.core.service.LabelService;
 import org.eclipse.egit.github.core.service.MilestoneService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.DownloadFields;
 import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
 import es.inf.uc3m.kr.smartgit.dao.fields.MilestoneFields;
 
-public class FileDownloadDAOImpl extends FileGithubDumperEntityDAOAdapter  {
+public class GithubDownloadDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
-	protected static Logger logger = Logger.getLogger(FileDownloadDAOImpl.class);
+	protected static Logger logger = Logger.getLogger(GithubDownloadDAOImpl.class);
 	
 	private DownloadService service;
 
 
-	public FileDownloadDAOImpl(DownloadService service, String filename){
+	public GithubDownloadDAOImpl(DownloadService service, DataSerializer serializer){
 		this.service = service;
-		setFileName(filename);
+		setSerializer(serializer);
 	}
 	
 	public List<Map<Enum,String>> getDescription(Map<String, Object> params) throws IOException{

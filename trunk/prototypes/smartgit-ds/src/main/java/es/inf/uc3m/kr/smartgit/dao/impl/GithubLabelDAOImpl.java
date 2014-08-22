@@ -14,18 +14,19 @@ import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.LabelService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
 
-public class FileLabelDAOImpl extends FileGithubDumperEntityDAOAdapter  {
+public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
-	protected static Logger logger = Logger.getLogger(FileLabelDAOImpl.class);
+	protected static Logger logger = Logger.getLogger(GithubLabelDAOImpl.class);
 	
 	private LabelService service;
 
 
-	public FileLabelDAOImpl(LabelService service, String filename){
+	public GithubLabelDAOImpl(LabelService service, DataSerializer serializer){
 		this.service = service;
-		setFileName(filename);
+		setSerializer(serializer);
 	}
 	
 	public List<Map<Enum,String>> getDescription(Map<String, Object> params) throws IOException{

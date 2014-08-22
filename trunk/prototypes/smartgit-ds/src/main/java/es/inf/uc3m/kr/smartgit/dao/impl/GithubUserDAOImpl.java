@@ -11,22 +11,21 @@ import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.UserService;
 
-import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.UserFields;
 
-public class FileUserDAOImpl extends FileGithubDumperEntityDAOAdapter {
-	protected static Logger logger = Logger.getLogger(FileUserDAOImpl.class);
+public class GithubUserDAOImpl extends GithubDumperEntityDAOAdapter {
+
+	protected static Logger logger = Logger.getLogger(GithubUserDAOImpl.class);
 	
 	private UserService service;
-
-	public FileUserDAOImpl(UserService service, String filename){
+	
+	public GithubUserDAOImpl(UserService service,  DataSerializer serializer){
 		this.service = service;
-		setFileName(filename);
+	    setSerializer(serializer);
 	}
 	
-
-
 	public List<Map<Enum, String>> getDescription(Map<String, Object> params)
 			throws IOException {
 		List<Map<Enum,String>> csvData = new LinkedList<>();
@@ -81,5 +80,8 @@ public class FileUserDAOImpl extends FileGithubDumperEntityDAOAdapter {
 		return this.service;
 	}
 	
-	
+
+
+
+
 }

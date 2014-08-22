@@ -16,19 +16,20 @@ import org.eclipse.egit.github.core.service.LabelService;
 import org.eclipse.egit.github.core.service.MilestoneService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
 import es.inf.uc3m.kr.smartgit.dao.fields.MilestoneFields;
 
-public class FileMilestoneDAOImpl extends FileGithubDumperEntityDAOAdapter  {
+public class GithubMilestoneDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
-	protected static Logger logger = Logger.getLogger(FileMilestoneDAOImpl.class);
+	protected static Logger logger = Logger.getLogger(GithubMilestoneDAOImpl.class);
 	
 	private MilestoneService service;
 
 
-	public FileMilestoneDAOImpl(MilestoneService service, String filename){
+	public GithubMilestoneDAOImpl(MilestoneService service, DataSerializer serializer){
 		this.service = service;
-		setFileName(filename);
+		setSerializer(serializer);
 	}
 	
 	public List<Map<Enum,String>> getDescription(Map<String, Object> params) throws IOException{

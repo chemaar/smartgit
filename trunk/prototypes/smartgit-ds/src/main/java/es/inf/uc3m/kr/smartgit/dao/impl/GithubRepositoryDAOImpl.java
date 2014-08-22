@@ -12,17 +12,18 @@ import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.RepositoryFields;
 
-public class FileRepositoryDAOImpl extends FileGithubDumperEntityDAOAdapter {
-	protected static Logger logger = Logger.getLogger(FileRepositoryDAOImpl.class);
+public class GithubRepositoryDAOImpl extends GithubDumperEntityDAOAdapter {
+	protected static Logger logger = Logger.getLogger(GithubRepositoryDAOImpl.class);
 	
 	private RepositoryService service;
 
 
-	public FileRepositoryDAOImpl(RepositoryService service, String filename){
+	public GithubRepositoryDAOImpl(RepositoryService service, DataSerializer serializer){
 		this.service = service;
-		setFileName(filename);
+		setSerializer(serializer);
 	}
 	
 	

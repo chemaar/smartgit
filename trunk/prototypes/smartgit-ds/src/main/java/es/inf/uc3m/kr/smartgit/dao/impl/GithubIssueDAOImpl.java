@@ -15,18 +15,19 @@ import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.IssueService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.IssueFields;
 
-public class FileIssueDAOImpl extends FileGithubDumperEntityDAOAdapter  {
+public class GithubIssueDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
-	protected static Logger logger = Logger.getLogger(FileIssueDAOImpl.class);
+	protected static Logger logger = Logger.getLogger(GithubIssueDAOImpl.class);
 	
 	private IssueService service;
 
 
-	public FileIssueDAOImpl(IssueService service, String filename){
+	public GithubIssueDAOImpl(IssueService service, DataSerializer serializer){
 		this.service = service;
-		setFileName(filename);
+		setSerializer(serializer);
 	}
 	
 	public List<Map<Enum,String>> getDescription(Map<String, Object> params) throws IOException{

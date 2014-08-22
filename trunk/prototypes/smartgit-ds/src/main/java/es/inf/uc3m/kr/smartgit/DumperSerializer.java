@@ -23,7 +23,7 @@ public class DumperSerializer {
 		write(file, repositories, dumper.getFields());
 	}
 
-	private static void write(String file,
+	public static void write(String file,
 			List<Map<Enum, String>> dumpLines, Enum[] fields) throws FileNotFoundException {
 		PrintWriter pw = new PrintWriter(new File(file));
 		//1-Create header

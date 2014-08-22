@@ -14,18 +14,19 @@ import org.eclipse.egit.github.core.service.CollaboratorService;
 import org.eclipse.egit.github.core.service.GitHubService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.CollaboratorFields;
 
-public class FileCollaboratorDAOImpl extends FileGithubDumperEntityDAOAdapter {
+public class GithubFileCollaboratorDAOImpl extends GithubDumperEntityDAOAdapter {
 	
-	protected static Logger logger = Logger.getLogger(FileCollaboratorDAOImpl.class);
+	protected static Logger logger = Logger.getLogger(GithubFileCollaboratorDAOImpl.class);
 	
 	private CollaboratorService service;
 	
 
-	public FileCollaboratorDAOImpl(CollaboratorService service, String filename){
+	public GithubFileCollaboratorDAOImpl(CollaboratorService service, DataSerializer serializer){
 		this.service = service;
-		setFileName(filename);
+		setSerializer(serializer);
 	}
 	
 	
