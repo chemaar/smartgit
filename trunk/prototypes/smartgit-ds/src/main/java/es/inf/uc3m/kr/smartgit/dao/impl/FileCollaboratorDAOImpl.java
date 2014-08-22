@@ -13,20 +13,19 @@ import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.CollaboratorService;
 import org.eclipse.egit.github.core.service.GitHubService;
 
-import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dumpers.CollaboratorFields;
 
-public class FileCollaboratorDAOImpl implements GithubDumperEntityDAO {
+public class FileCollaboratorDAOImpl extends FileGithubDumperEntityDAOAdapter {
 	
 	protected static Logger logger = Logger.getLogger(FileCollaboratorDAOImpl.class);
 	
 	private CollaboratorService service;
-	private String filename;
+	
 
 	public FileCollaboratorDAOImpl(CollaboratorService service, String filename){
 		this.service = service;
-		this.filename = filename;
+		setFileName(filename);
 	}
 	
 	
@@ -77,12 +76,6 @@ public class FileCollaboratorDAOImpl implements GithubDumperEntityDAO {
 //		both.addAll(collaboratorFields);
 //		return both.toArray(new Enum[both.size()]);
 		return CollaboratorFields.values();
-	}
-
-
-	public void serialize(Map<String, Object> params) throws Exception{
-		List<Map<Enum, String>> csvData = getDescription(params);
-		DumperSerializer.write(this.filename,csvData,this.getFields());
 	}
 	
 	

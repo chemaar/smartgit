@@ -1,5 +1,6 @@
 package es.inf.uc3m.kr.smartgit.dao.impl;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,26 +15,20 @@ import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dumpers.UserFields;
 
-public class FileUserDAOImpl implements GithubDumperEntityDAO {
+public class FileUserDAOImpl extends FileGithubDumperEntityDAOAdapter {
 	protected static Logger logger = Logger.getLogger(FileUserDAOImpl.class);
 	
 	private UserService service;
-	private String filename;
 
 	public FileUserDAOImpl(UserService service, String filename){
 		this.service = service;
-		this.filename = filename;
+		setFileName(filename);
 	}
 	
-	
-	public void serialize(Map<String, Object> params) throws Exception{
-		List<Map<Enum, String>> csvData = getDescription(params);
-		DumperSerializer.write(this.filename,csvData,this.getFields());
-	}
 
 
-	protected List<Map<Enum, String>> getDescription(Map<String, Object> params)
-			throws Exception {
+	public List<Map<Enum, String>> getDescription(Map<String, Object> params)
+			throws IOException {
 		List<Map<Enum,String>> csvData = new LinkedList<>();
 		try{
 			UserService userService = (UserService) getService();

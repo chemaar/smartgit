@@ -1,5 +1,6 @@
 package es.inf.uc3m.kr.smartgit.dao.impl;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,30 +11,23 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
-import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dumpers.RepositoryFields;
 
-public class FileRepositoryDAOImpl implements GithubDumperEntityDAO {
+public class FileRepositoryDAOImpl extends FileGithubDumperEntityDAOAdapter {
 	protected static Logger logger = Logger.getLogger(FileRepositoryDAOImpl.class);
 	
 	private RepositoryService service;
-	private String filename;
+
 
 	public FileRepositoryDAOImpl(RepositoryService service, String filename){
 		this.service = service;
-		this.filename = filename;
+		setFileName(filename);
 	}
 	
 	
-	public void serialize(Map<String, Object> params) throws Exception{
-		List<Map<Enum, String>> csvData = getDescription(params);
-		DumperSerializer.write(this.filename,csvData,this.getFields());
-	}
-
-
-	protected List<Map<Enum, String>> getDescription(Map<String, Object> params)
-			throws Exception {
+	public List<Map<Enum, String>> getDescription(Map<String, Object> params)
+			throws IOException {
 		List<Map<Enum,String>> csvData = new LinkedList<>();
 		try{
 			List<Repository> repos;

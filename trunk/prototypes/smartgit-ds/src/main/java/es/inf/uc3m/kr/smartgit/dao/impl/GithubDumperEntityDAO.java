@@ -1,5 +1,7 @@
 package es.inf.uc3m.kr.smartgit.dao.impl;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.egit.github.core.service.GitHubService;
@@ -14,5 +16,6 @@ public interface GithubDumperEntityDAO {
 	public GitHubService getService();
 	public Enum[] getFields();
 	public void serialize(Map<String, Object> params) throws Exception;
+	public List<Map<Enum, String>> getDescription(Map<String, Object> params) throws IOException;
 
 }
