@@ -13,7 +13,7 @@ import org.eclipse.egit.github.core.service.UserService;
 
 import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
-import es.inf.uc3m.kr.smartgit.dumpers.UserFields;
+import es.inf.uc3m.kr.smartgit.dao.fields.UserFields;
 
 public class FileUserDAOImpl extends FileGithubDumperEntityDAOAdapter {
 	protected static Logger logger = Logger.getLogger(FileUserDAOImpl.class);

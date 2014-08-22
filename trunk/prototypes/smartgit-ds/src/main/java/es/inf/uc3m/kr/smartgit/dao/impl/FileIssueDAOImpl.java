@@ -15,7 +15,7 @@ import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.IssueService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
-import es.inf.uc3m.kr.smartgit.dumpers.IssueFields;
+import es.inf.uc3m.kr.smartgit.dao.fields.IssueFields;
 
 public class FileIssueDAOImpl extends FileGithubDumperEntityDAOAdapter  {
 	

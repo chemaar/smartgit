@@ -12,7 +12,7 @@ import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
-import es.inf.uc3m.kr.smartgit.dumpers.RepositoryFields;
+import es.inf.uc3m.kr.smartgit.dao.fields.RepositoryFields;
 
 public class FileRepositoryDAOImpl extends FileGithubDumperEntityDAOAdapter {
 	protected static Logger logger = Logger.getLogger(FileRepositoryDAOImpl.class);
