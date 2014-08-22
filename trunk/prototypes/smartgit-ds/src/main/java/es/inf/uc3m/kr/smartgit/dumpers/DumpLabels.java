@@ -16,6 +16,7 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 
 import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
 
 public class DumpLabels implements GitHubDumper {
 	protected static Logger logger = Logger.getLogger(DumpLabels.class);

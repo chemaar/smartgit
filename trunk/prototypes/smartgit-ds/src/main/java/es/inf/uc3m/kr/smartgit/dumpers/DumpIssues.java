@@ -19,6 +19,7 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 
 import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.fields.IssueFields;
 
 public class DumpIssues implements GitHubDumper {
 	protected static Logger logger = Logger.getLogger(DumpIssues.class);

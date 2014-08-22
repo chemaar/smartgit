@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -20,21 +21,27 @@ import es.inf.uc3m.kr.smartgit.GighubConfigProperties;
 
 public class UserExtractor {
 	
+	protected static Logger logger = Logger.getLogger(UserExtractor.class);
 	public static void main(String []args) throws FileNotFoundException{
-		//Until 5 000 0000=135*x 37K~~
-		int TRIES = 10000;
-		int since = 0;
-		int MAX_FILE = 135*3;
+		//Until 5 000 0000=135*x->37K tries~~
+		int TRIES = 5000; //Restriction of the Github API: 5000 per hour
+		int since = 0; //Read from file to automate: 436403
+		int MAX__PER_FILE = 10000;
 		ClientConfig config = new DefaultClientConfig();
 		Client client = Client.create(config);
 		PrintWriter pw = new PrintWriter(new File("dumps/"+since+"-users-login-id.properties"));
-		
+		int written = 0;
+		int total = 0;
 		for(int tries = 0; tries<TRIES; tries++){
-			System.out.println("SINCE: "+since);
-			if(since>MAX_FILE){
+			logger.debug("SINCE: "+since+" written: "+written+" tries: "+tries);
+			
+		
+			if(written>MAX__PER_FILE){
+				total += written;
 				pw.close();
 				pw = null;
-				pw = new PrintWriter(new File("dumps/"+since+"-users-login-id.properties"));
+				pw = new PrintWriter(new File("dumps/"+total+"-users-login-id.properties"));
+				written = 0;
 			}
 			String uri = "https://api.github.com/users?since="+since;
 			//System.out.println("Try "+tries+" with URI "+uri);	
@@ -50,6 +57,7 @@ public class UserExtractor {
 				JSONObject user = (JSONObject)list.get(i);
 				pw.println(user.get("login")+"="+user.get("id"));
 				lastId=(int) user.get("id");
+				written++;
 			}
 			since = lastId;
 		}

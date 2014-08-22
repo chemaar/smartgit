@@ -1,4 +1,4 @@
-package es.inf.uc3m.kr.smartgit.dumpers;
+package es.inf.uc3m.kr.smartgit.dao.fields;
 
 public enum RepositoryFields {
 	ID,

@@ -18,6 +18,7 @@ import org.eclipse.egit.github.core.service.UserService;
 
 import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
+import es.inf.uc3m.kr.smartgit.dao.fields.CollaboratorFields;
 
 public class DumpCollaborators extends DumpUser {
 
