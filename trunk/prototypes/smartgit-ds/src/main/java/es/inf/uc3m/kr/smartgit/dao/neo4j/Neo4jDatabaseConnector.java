@@ -24,7 +24,7 @@ public class Neo4jDatabaseConnector {
 		MILESTONE_NODE,
 		ISSUE_NODE,
 		COMMIT_NODE,
-		DOWNLOAD_NODE
+		DOWNLOAD_NODE, OWNER
 	}
 
 	private static final String SMARTGIT_DB = "target/smartgit-db";

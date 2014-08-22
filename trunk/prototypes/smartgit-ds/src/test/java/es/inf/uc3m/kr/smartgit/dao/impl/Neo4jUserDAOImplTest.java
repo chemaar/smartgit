@@ -19,8 +19,8 @@ public class Neo4jUserDAOImplTest {
 
 	@Test
 	public void test() throws Exception {
-		GraphDatabaseService graphService = Neo4jDatabaseConnector.getGraphDatabaseService(true);
-		DataSerializer serializer = new Neo4jDataSerializer(graphService,RelTypes.USER_NODE,true);
+	
+		DataSerializer serializer = new Neo4jDataSerializer(RelTypes.USER_NODE,true);
 		List<String> logins = new LinkedList<String>();
 		logins.add("chemaar");
 		UserService service = new UserService(GithubConnectionHelper.createConnection());

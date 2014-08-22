@@ -13,13 +13,23 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
+import es.inf.uc3m.kr.smartgit.dao.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.RepositoryFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.LinkCreator;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubRepositoryDAOImpl extends GithubDumperEntityDAOAdapter {
 	protected static Logger logger = Logger.getLogger(GithubRepositoryDAOImpl.class);
 	
 	private RepositoryService service;
 
+	public GithubRepositoryDAOImpl(RepositoryService service, DataSerializer serializer, LinkCreator linkCreator){
+		this.service = service;
+		setSerializer(serializer);
+		setLinkCreator(linkCreator);
+	}
+	
+	
 
 	public GithubRepositoryDAOImpl(RepositoryService service, DataSerializer serializer){
 		this.service = service;
@@ -41,6 +51,11 @@ public class GithubRepositoryDAOImpl extends GithubDumperEntityDAOAdapter {
 		
 			for(Repository repo: repos){
 				csvData.add(describe(repo));
+				LinkTO link = new LinkTO();
+				link.idFrom = String.valueOf(repo.getId());
+				link.idTo = (repo.getOwner()!=null?String.valueOf(repo.getOwner().getLogin()):null);
+				link.relation = RelTypes.OWNER;
+				getLinks().add(link);
 			}
 		}catch(Exception e){
 			logger.error(e);
@@ -65,10 +80,12 @@ public class GithubRepositoryDAOImpl extends GithubDumperEntityDAOAdapter {
 		values.put(RepositoryFields.Watchers, String.valueOf(repository.getWatchers()));
 		values.put(RepositoryFields.Forks, String.valueOf(repository.getForks()));
 		values.put(RepositoryFields.Owner_ID, (repository.getOwner()!=null?String.valueOf(repository.getOwner().getId()):null));
-		values.put(RepositoryFields.Owner_Login, (repository.getOwner()!=null?String.valueOf(repository.getOwner().getLogin()):null));
+		values.put(RepositoryFields.Owner_Login, 
+				(repository.getOwner()!=null?String.valueOf(repository.getOwner().getLogin()):null));
 		return values;
 	}
 
+	
 	@Override
 	public GitHubService getService() {
 		if(this.service == null){

@@ -12,7 +12,6 @@ public class Neo4jDatabaseConnectorTest {
 	public void testCreateNew() throws IOException {
 		 GraphDatabaseService service = Neo4jDatabaseConnector.getGraphDatabaseService(true);
 		 Assert.assertNotNull(service);
-		 Neo4jDatabaseConnector.returnGraphDatabaseService(service);
 		 service = Neo4jDatabaseConnector.getGraphDatabaseService();
 		 Assert.assertNotNull(service);
 		 Neo4jDatabaseConnector.returnGraphDatabaseService(service);
