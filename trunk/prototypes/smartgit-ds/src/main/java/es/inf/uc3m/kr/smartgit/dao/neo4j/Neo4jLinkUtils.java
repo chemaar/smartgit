@@ -47,8 +47,9 @@ public class Neo4jLinkUtils {
 
 
 		public static List<Long> getInternalUserIds(String userLogin,GraphDatabaseService graphService){
-			String query = "match (n:USER_NODE) where n.Login={login} return id(n);";
+			String query = "match (n:{type}) where n.Login={login} return id(n);";
 			Map<String, Object> params = new HashMap<String, Object>();
+			params.put( "type", RelTypes.USER_NODE );
 			params.put( "login", userLogin );
 			return runQuery(graphService,query, params, "id(n)");
 		}
@@ -75,4 +76,79 @@ public class Neo4jLinkUtils {
 			return internalIds;
 		}
 
+
+
+		public static long lookForInternalDownloadId(String idDownload,
+				GraphDatabaseService graphService) {
+			List<Long> ids = getInternalDownloadIds(idDownload,graphService);
+			return ids.get(0);
+		}
+
+		private static List<Long> getInternalDownloadIds(String idDownload,
+				GraphDatabaseService graphService) {
+			String query = "match (n:DOWNLOAD_NODE) where n.ID={id} return id(n);";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put( "id", idDownload );
+			return runQuery(graphService,query, params, "id(n)");
+		}
+
+		public static long lookForInternalIssueId(String idIssue,
+				GraphDatabaseService graphService) {
+			List<Long> ids = getInternalIssueIds(idIssue,graphService);
+			return ids.get(0);
+		}
+
+		private static List<Long> getInternalIssueIds(String idIssue,
+				GraphDatabaseService graphService) {
+			String query = "match (n:ISSUE_NODE) where n.ID={id} return id(n);";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put( "id", idIssue );
+			return runQuery(graphService,query, params, "id(n)");
+		}
+		
+		
+		public static long lookForInternalLabelId(String idLabel,
+				GraphDatabaseService graphService) {
+			List<Long> ids = getInternalLabelIds(idLabel,graphService);
+			return ids.get(0);
+		}
+
+		private static List<Long> getInternalLabelIds(String idLabel,
+				GraphDatabaseService graphService) {
+			String query = "match (n:LABEL_NODE) where n.ID={id} return id(n);";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put( "id", idLabel );
+			return runQuery(graphService,query, params, "id(n)");
+		}
+		
+
+		public static long lookForInternalMilestoneId(String idMilestone,
+				GraphDatabaseService graphService) {
+			List<Long> ids = getInternalMilestoneIds(idMilestone,graphService);
+			return ids.get(0);
+		}
+
+		private static List<Long> getInternalMilestoneIds(String idMilestone,
+				GraphDatabaseService graphService) {
+			String query = "match (n:MILESTONE_NODE) where n.ID={id} return id(n);";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put( "id", idMilestone );
+			return runQuery(graphService,query, params, "id(n)");
+		}
+		
+		public static long lookForInternalCommitId(String idCommit,
+				GraphDatabaseService graphService) {
+			List<Long> ids = getInternalCommitIds(idCommit,graphService);
+			return ids.get(0);
+		}
+
+		private static List<Long> getInternalCommitIds(String idCommit,
+				GraphDatabaseService graphService) {
+			String query = "match (n:COMMIT_NODE) where n.SHA={id} return id(n);";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put( "id", idCommit );
+			return runQuery(graphService,query, params, "id(n)");
+		}
+		
+		
 }
