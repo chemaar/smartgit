@@ -1,5 +1,6 @@
 package es.inf.uc3m.kr.smartgit.dao.impl.neo4j;
 
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class FullUserDescribeTest {
 
 	@Test
 	public void test() throws Exception {
+		System.out.println(GregorianCalendar.getInstance().getTime().toString());
 		Neo4jDatabaseConnector.getGraphDatabaseService(true);
 		//Create user
 		DataSerializer serializer = new Neo4jDataSerializer(RelTypes.USER_NODE,true);
@@ -61,7 +63,7 @@ public class FullUserDescribeTest {
 			createLabels(login, repo);
 			createDownloads(login, repo);
 		}
-
+		System.out.println(GregorianCalendar.getInstance().getTime().toString());
 
 	}
 

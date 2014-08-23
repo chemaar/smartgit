@@ -61,8 +61,8 @@ public class Neo4jDataSerializer implements DataSerializer {
 			linkCreator.createLinks(links);
 			System.out.println("Ending links");
 		}
-		System.out.println("End serialize normal "+this.getClass().getCanonicalName());
-		Neo4jDatabaseConnector.returnGraphDatabaseService(this.graphService);
+		logger.debug("End serialize normal "+this.getClass().getCanonicalName());
+		//Neo4jDatabaseConnector.returnGraphDatabaseService(this.graphService);
 	}
 
 

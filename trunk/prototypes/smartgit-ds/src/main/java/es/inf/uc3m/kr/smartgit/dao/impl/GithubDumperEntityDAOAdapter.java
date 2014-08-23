@@ -16,12 +16,8 @@ public abstract class GithubDumperEntityDAOAdapter implements GithubDumperEntity
 	
 	@Override
 	public void serialize(Map<String, Object> params) throws Exception {
-		System.out.println("Getting particular description");
 		List<Map<Enum, String>> csvData = getDescription(params);
-		System.out.println("Serialize normal "+this.getClass().getCanonicalName());
 		this.serializer.serialize(csvData,this.getFields(),this.getLinks(),this.linkCreator);
-		System.out.println("End Serialize normal"+this.getClass().getCanonicalName());
-		
 	}
 
 	public DataSerializer getSerializer() {
