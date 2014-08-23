@@ -8,10 +8,10 @@ public class DownloadRepoLinkCreator extends LinkCreatorAdapter{
 
 	protected static Logger logger = Logger.getLogger(DownloadRepoLinkCreator.class);
 
-	protected boolean link(String idFrom, String idTo) {
-		long internalIdDownload =  Neo4jLinkUtils.lookForInternalDownloadId(idFrom,getGraphService());		
-		long internalIdRepository = Neo4jLinkUtils.lookForInternalRepositoryId(idTo, getGraphService());
-		return Neo4jLinkUtils.createLink(internalIdDownload, internalIdRepository, RelTypes.HAS_DOWNLOAD,getGraphService());
+	protected boolean link(String idFrom, String idTo,  RelTypes relation) {
+		long internalIdRepository = Neo4jLinkUtils.lookForInternalRepositoryId(idFrom, getGraphService());
+		long internalIdDownload =  Neo4jLinkUtils.lookForInternalDownloadId(idTo,getGraphService());		
+		return Neo4jLinkUtils.createLink(internalIdRepository, internalIdDownload, relation,getGraphService());
 	}
 
 	

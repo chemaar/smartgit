@@ -8,10 +8,10 @@ public class LabelRepoLinkCreator extends LinkCreatorAdapter{
 
 	protected static Logger logger = Logger.getLogger(LabelRepoLinkCreator.class);
 
-	protected boolean link(String idFrom, String idTo) {
-		long internalIdLabel =  Neo4jLinkUtils.lookForInternalLabelId(idFrom,getGraphService());		
-		long internalIdRepository = Neo4jLinkUtils.lookForInternalRepositoryId(idTo, getGraphService());
-		return Neo4jLinkUtils.createLink(internalIdLabel, internalIdRepository, RelTypes.HAS_DOWNLOAD,getGraphService());
+	protected boolean link(String idFrom, String idTo,  RelTypes relation) {
+		long internalIdRepository = Neo4jLinkUtils.lookForInternalRepositoryId(idFrom, getGraphService());		
+		long internalIdLabel = Neo4jLinkUtils.lookForInternalLabelId(idTo, getGraphService());
+		return Neo4jLinkUtils.createLink(internalIdRepository,internalIdLabel, relation,getGraphService());
 	}
 
 	

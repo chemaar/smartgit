@@ -20,7 +20,7 @@ public class FileCollaboratorDAOImplTest {
 		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
 		CollaboratorService service = new CollaboratorService(GithubConnectionHelper.createConnection());
 		RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
-		GithubDumperEntityDAO dao = new GithubFileCollaboratorDAOImpl(service, serializer);
+		GithubDumperEntityDAO dao = new GithubCollaboratorDAOImpl(service, serializer);
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put(GithubDumperEntityDAO.REPO_CONSTANT_PARAM,repositoryService.getRepositories().get(0));
 		dao.serialize(params);

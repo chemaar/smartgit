@@ -1,4 +1,4 @@
-package es.inf.uc3m.kr.smartgit.dao.impl;
+package es.inf.uc3m.kr.smartgit.dao.impl.neo4j;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,6 +11,8 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
+import es.inf.uc3m.kr.smartgit.dao.impl.GithubDumperEntityDAO;
+import es.inf.uc3m.kr.smartgit.dao.impl.GithubUserDAOImpl;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;

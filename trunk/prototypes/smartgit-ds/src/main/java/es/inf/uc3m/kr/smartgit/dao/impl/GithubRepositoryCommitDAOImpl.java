@@ -14,11 +14,13 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryCommit;
 import org.eclipse.egit.github.core.service.CommitService;
 import org.eclipse.egit.github.core.service.GitHubService;
+import org.eclipse.egit.github.core.service.MilestoneService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.CommitFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.LinkCreator;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter  {
@@ -28,6 +30,13 @@ public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter 
 	private CommitService service;
 
 
+	public GithubRepositoryCommitDAOImpl(CommitService service, DataSerializer serializer, LinkCreator linkCreator){
+		this.service = service;
+		setSerializer(serializer);
+		setLinkCreator(linkCreator);
+	}
+	
+	
 	public GithubRepositoryCommitDAOImpl(CommitService service, DataSerializer serializer){
 		this.service = service;
 		setSerializer(serializer);
@@ -39,13 +48,15 @@ public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter 
 			IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
 			List<RepositoryCommit> commits = ((CommitService) getService()).getCommits(repo);
 			long repoID = ((Repository)repo).getId();
+			logger.debug("The repository with id "+repoID+" has "+commits.size()+" commits.");
 			for(RepositoryCommit commit: commits){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(commit,repoID));
 				LinkTO link = new LinkTO();
 				link.idFrom = String.valueOf(repoID);
 				link.idTo = commit.getSha();
-				link.relation = RelTypes.HAS_LABEL;
+				link.relation = RelTypes.HAS_COMMIT;
+				getLinks().add(link);
 			}
 		}catch(Exception e){
 			logger.error(e);

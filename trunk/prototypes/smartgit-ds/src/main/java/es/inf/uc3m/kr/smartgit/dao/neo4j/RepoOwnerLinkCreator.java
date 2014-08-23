@@ -10,10 +10,10 @@ public class RepoOwnerLinkCreator extends LinkCreatorAdapter{
 
 	//Creation of links
 
-	protected boolean link(String idFrom, String idTo){
+	protected boolean link(String idFrom, String idTo,  RelTypes relation) {
 		long internalIdRepository = Neo4jLinkUtils.lookForInternalRepositoryId(idFrom, getGraphService());
 		long internalIdOwner =  Neo4jLinkUtils.lookForInternalUserId(idTo,getGraphService());		
-		return Neo4jLinkUtils.createLink(internalIdRepository, internalIdOwner, RelTypes.OWNER,getGraphService());
+		return Neo4jLinkUtils.createLink(internalIdRepository, internalIdOwner, relation,getGraphService());
 	}
 
 	public boolean linkRepositoryOther(String idRepository, String otherId,RelTypes relType){

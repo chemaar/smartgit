@@ -16,6 +16,7 @@ import org.eclipse.egit.github.core.service.DownloadService;
 import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.LabelService;
 import org.eclipse.egit.github.core.service.MilestoneService;
+import org.eclipse.egit.github.core.service.RepositoryService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
@@ -23,6 +24,7 @@ import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.DownloadFields;
 import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
 import es.inf.uc3m.kr.smartgit.dao.fields.MilestoneFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.LinkCreator;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubDownloadDAOImpl extends GithubDumperEntityDAOAdapter  {
@@ -32,6 +34,13 @@ public class GithubDownloadDAOImpl extends GithubDumperEntityDAOAdapter  {
 	private DownloadService service;
 
 
+	public GithubDownloadDAOImpl(DownloadService service, DataSerializer serializer, LinkCreator linkCreator){
+		this.service = service;
+		setSerializer(serializer);
+		setLinkCreator(linkCreator);
+	}
+	
+	
 	public GithubDownloadDAOImpl(DownloadService service, DataSerializer serializer){
 		this.service = service;
 		setSerializer(serializer);
@@ -43,6 +52,7 @@ public class GithubDownloadDAOImpl extends GithubDumperEntityDAOAdapter  {
 			IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
 			List<Download> downloads = ((DownloadService) getService()).getDownloads(repo);
 			long repoID = ((Repository)repo).getId();
+			logger.debug("The repository with id "+repoID+" has "+downloads.size()+" downloads.");
 			for(Download download: downloads){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(download,repoID));

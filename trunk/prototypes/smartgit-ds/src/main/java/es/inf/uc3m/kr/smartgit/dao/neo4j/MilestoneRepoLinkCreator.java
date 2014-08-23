@@ -8,11 +8,10 @@ public class MilestoneRepoLinkCreator extends LinkCreatorAdapter{
 
 	protected static Logger logger = Logger.getLogger(MilestoneRepoLinkCreator.class);
 
-	
-	protected boolean link(String idFrom, String idTo) {
-		long internalIdMilestone =  Neo4jLinkUtils.lookForInternalMilestoneId(idFrom,getGraphService());		
-		long internalIdRepository = Neo4jLinkUtils.lookForInternalRepositoryId(idTo, getGraphService());
-		return Neo4jLinkUtils.createLink(internalIdMilestone, internalIdRepository, RelTypes.HAS_DOWNLOAD,getGraphService());
+	protected boolean link(String idFrom, String idTo,  RelTypes relation) {
+		long internalIdRepository = Neo4jLinkUtils.lookForInternalRepositoryId(idFrom, getGraphService());		
+		long internalIdMilestone = Neo4jLinkUtils.lookForInternalMilestoneId(idTo, getGraphService());
+		return Neo4jLinkUtils.createLink(internalIdRepository,internalIdMilestone, relation,getGraphService());
 	}
 
 	

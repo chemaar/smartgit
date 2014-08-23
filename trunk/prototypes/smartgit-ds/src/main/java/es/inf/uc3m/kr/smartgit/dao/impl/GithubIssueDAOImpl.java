@@ -11,6 +11,7 @@ import org.eclipse.egit.github.core.IRepositoryIdProvider;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Label;
 import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.service.DownloadService;
 import org.eclipse.egit.github.core.service.GitHubService;
 import org.eclipse.egit.github.core.service.IssueService;
 
@@ -18,6 +19,7 @@ import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.IssueFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.LinkCreator;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubIssueDAOImpl extends GithubDumperEntityDAOAdapter  {
@@ -27,6 +29,12 @@ public class GithubIssueDAOImpl extends GithubDumperEntityDAOAdapter  {
 	private IssueService service;
 
 
+	public GithubIssueDAOImpl(IssueService service, DataSerializer serializer, LinkCreator linkCreator){
+		this.service = service;
+		setSerializer(serializer);
+		setLinkCreator(linkCreator);
+	}
+	
 	public GithubIssueDAOImpl(IssueService service, DataSerializer serializer){
 		this.service = service;
 		setSerializer(serializer);
@@ -38,6 +46,7 @@ public class GithubIssueDAOImpl extends GithubDumperEntityDAOAdapter  {
 			IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
 			List<Issue> issues = ((IssueService) getService()).getIssues(repo, new HashMap<String,String>());
 			long repoID = ((Repository)repo).getId();
+			logger.debug("The repository with id "+repoID+" has "+issues.size()+" issues.");
 			for(Issue issue: issues){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(issue,repoID));
@@ -45,6 +54,7 @@ public class GithubIssueDAOImpl extends GithubDumperEntityDAOAdapter  {
 				link.idFrom = String.valueOf(repoID);
 				link.idTo = String.valueOf(issue.getId());
 				link.relation = RelTypes.HAS_ISSUE;
+				getLinks().add(link);
 				//FIXME: LINK ISSUES TO CREATORS, ASSIGNEE, ETC.
 			}
 		}catch(Exception e){

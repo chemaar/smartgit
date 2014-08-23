@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -17,6 +18,7 @@ import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class Neo4jLinkUtils {
 
+	protected static Logger logger = Logger.getLogger(Neo4jLinkUtils.class);
 	//FIXME: Control failures
 	
 
@@ -25,7 +27,7 @@ public class Neo4jLinkUtils {
 			Node from = graphService.getNodeById(fromId);
 			Node to = graphService.getNodeById(toId);
 			if(from != null && to !=null){
-				from.createRelationshipTo(to,RelTypes.OWNER);
+				from.createRelationshipTo(to,relType);
 			}
 			tx.success();
 		}
@@ -47,9 +49,8 @@ public class Neo4jLinkUtils {
 
 
 		public static List<Long> getInternalUserIds(String userLogin,GraphDatabaseService graphService){
-			String query = "match (n:{type}) where n.Login={login} return id(n);";
+			String query = "match (n:USER_NODE) where n.Login={login} return id(n);";
 			Map<String, Object> params = new HashMap<String, Object>();
-			params.put( "type", RelTypes.USER_NODE );
 			params.put( "login", userLogin );
 			return runQuery(graphService,query, params, "id(n)");
 		}
@@ -65,6 +66,7 @@ public class Neo4jLinkUtils {
 			List<Long> internalIds = new LinkedList<Long>();
 			ExecutionEngine engine = new ExecutionEngine(graphDb);
 			try (Transaction tx = graphDb.beginTx()) {
+				logger.debug("Running link query: "+query+" and params "+params);
 				ExecutionResult result = engine.execute(query, params);
 				// extract the data out of the result, you cannot iterate over it outside of a tx
 				Iterator<Long> n_column = result.columnAs(var);

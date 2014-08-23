@@ -11,12 +11,14 @@ import org.eclipse.egit.github.core.IRepositoryIdProvider;
 import org.eclipse.egit.github.core.Label;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.service.GitHubService;
+import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.LabelService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.LinkCreator;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
@@ -26,6 +28,12 @@ public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
 	private LabelService service;
 
 
+	public GithubLabelDAOImpl(LabelService service, DataSerializer serializer, LinkCreator linkCreator){
+		this.service = service;
+		setSerializer(serializer);
+		setLinkCreator(linkCreator);
+	}
+	
 	public GithubLabelDAOImpl(LabelService service, DataSerializer serializer){
 		this.service = service;
 		setSerializer(serializer);
@@ -37,6 +45,7 @@ public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
 			IRepositoryIdProvider repo = (IRepositoryIdProvider) params.get(REPO_CONSTANT_PARAM);
 			List<Label> labels = ((LabelService) getService()).getLabels(repo);
 			long repoID = ((Repository)repo).getId();
+			logger.debug("The repository with id "+repoID+" has "+labels.size()+" labels.");
 			for(Label label: labels){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(label,repoID));
@@ -44,6 +53,7 @@ public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
 				link.idFrom = String.valueOf(repoID);
 				link.idTo = String.valueOf(label.hashCode());
 				link.relation = RelTypes.HAS_LABEL;
+				getLinks().add(link);
 			}
 		}catch(Exception e){
 			logger.error(e);
