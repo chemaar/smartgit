@@ -19,9 +19,11 @@ import org.eclipse.egit.github.core.service.MilestoneService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.DownloadFields;
 import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
 import es.inf.uc3m.kr.smartgit.dao.fields.MilestoneFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubDownloadDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
@@ -44,6 +46,11 @@ public class GithubDownloadDAOImpl extends GithubDumperEntityDAOAdapter  {
 			for(Download download: downloads){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(download,repoID));
+				LinkTO link = new LinkTO();
+				link.idFrom = String.valueOf(repoID);
+				link.idTo = String.valueOf(download.getId());
+				link.relation = RelTypes.HAS_DOWNLOAD;
+				getLinks().add(link);
 			}
 		}catch(Exception e){
 			logger.error(e);

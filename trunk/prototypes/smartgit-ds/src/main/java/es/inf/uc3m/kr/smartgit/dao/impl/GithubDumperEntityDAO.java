@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.eclipse.egit.github.core.service.GitHubService;
 
-import es.inf.uc3m.kr.smartgit.dao.LinkTO;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 
 public interface GithubDumperEntityDAO {
 

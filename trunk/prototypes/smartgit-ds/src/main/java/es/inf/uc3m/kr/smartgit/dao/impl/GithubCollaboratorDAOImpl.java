@@ -16,6 +16,7 @@ import org.eclipse.egit.github.core.service.GitHubService;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.CollaboratorFields;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 
 public class GithubCollaboratorDAOImpl extends GithubDumperEntityDAOAdapter {
 	

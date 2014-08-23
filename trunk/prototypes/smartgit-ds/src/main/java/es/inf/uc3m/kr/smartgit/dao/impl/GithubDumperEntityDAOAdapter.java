@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
-import es.inf.uc3m.kr.smartgit.dao.LinkTO;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.LinkCreator;
 
 public abstract class GithubDumperEntityDAOAdapter implements GithubDumperEntityDAO {

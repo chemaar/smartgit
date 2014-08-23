@@ -6,8 +6,8 @@ import java.util.Map;
 
 import es.inf.uc3m.kr.smartgit.DumperSerializer;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
-import es.inf.uc3m.kr.smartgit.dao.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.LinkCreator;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 
 public class FileDataSerializer implements DataSerializer {
 

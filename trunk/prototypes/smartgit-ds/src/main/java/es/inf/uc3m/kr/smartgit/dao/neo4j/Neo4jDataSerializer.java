@@ -15,7 +15,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.helpers.collection.IteratorUtil;
 
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
-import es.inf.uc3m.kr.smartgit.dao.LinkTO;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class Neo4jDataSerializer implements DataSerializer {

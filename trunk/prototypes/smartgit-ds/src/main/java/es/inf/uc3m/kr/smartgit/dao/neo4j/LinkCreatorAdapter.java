@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.neo4j.graphdb.GraphDatabaseService;
 
-import es.inf.uc3m.kr.smartgit.dao.LinkTO;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 
 public abstract class LinkCreatorAdapter  implements LinkCreator{
 

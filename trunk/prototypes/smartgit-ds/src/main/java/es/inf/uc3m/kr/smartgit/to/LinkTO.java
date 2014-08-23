@@ -1,4 +1,4 @@
-package es.inf.uc3m.kr.smartgit.dao;
+package es.inf.uc3m.kr.smartgit.to;
 
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 

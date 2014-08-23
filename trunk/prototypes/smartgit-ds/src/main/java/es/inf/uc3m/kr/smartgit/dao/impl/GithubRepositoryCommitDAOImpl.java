@@ -17,7 +17,9 @@ import org.eclipse.egit.github.core.service.GitHubService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.CommitFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
@@ -40,6 +42,10 @@ public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter 
 			for(RepositoryCommit commit: commits){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(commit,repoID));
+				LinkTO link = new LinkTO();
+				link.idFrom = String.valueOf(repoID);
+				link.idTo = commit.getSha();
+				link.relation = RelTypes.HAS_LABEL;
 			}
 		}catch(Exception e){
 			logger.error(e);

@@ -16,7 +16,9 @@ import org.eclipse.egit.github.core.service.IssueService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.IssueFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubIssueDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
@@ -39,6 +41,11 @@ public class GithubIssueDAOImpl extends GithubDumperEntityDAOAdapter  {
 			for(Issue issue: issues){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(issue,repoID));
+				LinkTO link = new LinkTO();
+				link.idFrom = String.valueOf(repoID);
+				link.idTo = String.valueOf(issue.getId());
+				link.relation = RelTypes.HAS_ISSUE;
+				//FIXME: LINK ISSUES TO CREATORS, ASSIGNEE, ETC.
 			}
 		}catch(Exception e){
 			logger.error(e);

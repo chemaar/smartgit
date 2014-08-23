@@ -15,7 +15,9 @@ import org.eclipse.egit.github.core.service.LabelService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
@@ -38,6 +40,10 @@ public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
 			for(Label label: labels){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(label,repoID));
+				LinkTO link = new LinkTO();
+				link.idFrom = String.valueOf(repoID);
+				link.idTo = String.valueOf(label.hashCode());
+				link.relation = RelTypes.HAS_LABEL;
 			}
 		}catch(Exception e){
 			logger.error(e);
@@ -51,6 +57,7 @@ public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
 		Map<Enum,String> values = new HashMap<Enum,String>();
 		values.put(LabelFields.Type, LabelFields.Label.name());
 		values.put(LabelFields.ID_Repo,""+id); 
+		values.put(LabelFields.ID,""+label.hashCode()); 
 		values.put(LabelFields.Name,label.getName());
 		values.put(LabelFields.Color,label.getColor());
 		values.put(LabelFields.URL,label.getUrl());

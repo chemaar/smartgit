@@ -17,8 +17,10 @@ import org.eclipse.egit.github.core.service.MilestoneService;
 
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
+import es.inf.uc3m.kr.smartgit.to.LinkTO;
 import es.inf.uc3m.kr.smartgit.dao.fields.LabelFields;
 import es.inf.uc3m.kr.smartgit.dao.fields.MilestoneFields;
+import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubMilestoneDAOImpl extends GithubDumperEntityDAOAdapter  {
 	
@@ -42,6 +44,10 @@ public class GithubMilestoneDAOImpl extends GithubDumperEntityDAOAdapter  {
 			for(Milestone milestone: milestones){
 				//In case of needing memory, directly write here to a file...
 				csvData.add(describe(milestone,repoID));
+				LinkTO link = new LinkTO();
+				link.idFrom = String.valueOf(repoID);
+				link.idTo = String.valueOf(milestone.hashCode());
+				link.relation = RelTypes.HAS_LABEL;
 			}
 		}catch(org.eclipse.egit.github.core.client.RequestException e){
 			logger.error(e);
@@ -53,6 +59,7 @@ public class GithubMilestoneDAOImpl extends GithubDumperEntityDAOAdapter  {
 	private Map<Enum,String> describe(Milestone milestone, long id) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
 		values.put(MilestoneFields.ID_Repo,""+id); 
+		values.put(MilestoneFields.ID,""+milestone.hashCode());
 		values.put(MilestoneFields.Number,""+milestone.getNumber());
 		values.put(MilestoneFields.Title,milestone.getTitle());
 		values.put(MilestoneFields.Description,milestone.getDescription());
