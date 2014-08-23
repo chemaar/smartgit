@@ -17,14 +17,14 @@ import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.fields.CollaboratorFields;
 
-public class GithubFileCollaboratorDAOImpl extends GithubDumperEntityDAOAdapter {
+public class GithubCollaboratorDAOImpl extends GithubDumperEntityDAOAdapter {
 	
-	protected static Logger logger = Logger.getLogger(GithubFileCollaboratorDAOImpl.class);
+	protected static Logger logger = Logger.getLogger(GithubCollaboratorDAOImpl.class);
 	
 	private CollaboratorService service;
 	
 
-	public GithubFileCollaboratorDAOImpl(CollaboratorService service, DataSerializer serializer){
+	public GithubCollaboratorDAOImpl(CollaboratorService service, DataSerializer serializer){
 		this.service = service;
 		setSerializer(serializer);
 	}

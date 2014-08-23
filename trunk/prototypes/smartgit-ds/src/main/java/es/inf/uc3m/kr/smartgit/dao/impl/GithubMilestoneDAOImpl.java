@@ -56,7 +56,7 @@ public class GithubMilestoneDAOImpl extends GithubDumperEntityDAOAdapter  {
 		values.put(MilestoneFields.Number,""+milestone.getNumber());
 		values.put(MilestoneFields.Title,milestone.getTitle());
 		values.put(MilestoneFields.Description,milestone.getDescription());
-		values.put(MilestoneFields.Creator,milestone.getCreator().getLogin());
+		values.put(MilestoneFields.Creator, (milestone.getCreator()!=null?milestone.getCreator().getLogin():null));
 		values.put(MilestoneFields.Created,(milestone.getCreatedAt()!=null?milestone.getCreatedAt().toString():null));
 		values.put(MilestoneFields.Due_ON,(milestone.getDueOn()!=null?milestone.getDueOn().toString():null));
 		values.put(MilestoneFields.Open_Issues,""+milestone.getOpenIssues());
