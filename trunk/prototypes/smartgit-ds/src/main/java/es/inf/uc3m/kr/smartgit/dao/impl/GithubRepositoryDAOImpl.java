@@ -42,7 +42,7 @@ public class GithubRepositoryDAOImpl extends GithubDumperEntityDAOAdapter {
 		List<Map<Enum,String>> csvData = new LinkedList<>();
 		try{
 			List<Repository> repos;
-			if (params == null){
+			if (params != null){
 				 repos = ((RepositoryService) getService()).
 						getRepositories((String)params.get(USER_LOGIN_PARAM));
 			}else{
@@ -50,6 +50,7 @@ public class GithubRepositoryDAOImpl extends GithubDumperEntityDAOAdapter {
 			}
 		
 			for(Repository repo: repos){
+				logger.debug("Describing repository with id "+repo.getId()+" and name "+repo.getName());
 				csvData.add(describe(repo));
 				LinkTO link = new LinkTO();
 				link.idFrom = String.valueOf(repo.getId());

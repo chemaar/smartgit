@@ -18,7 +18,7 @@ import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class Neo4jLinkUtils {
 
-	static List<Long> repoIds = new LinkedList<Long>();
+	static Map<String, Long> repoIds = new HashMap<String, Long>();
 
 	protected static Logger logger = Logger.getLogger(Neo4jLinkUtils.class);
 	//FIXME: Control failures
@@ -63,14 +63,15 @@ public class Neo4jLinkUtils {
 	public static List<Long> getInternalRepoIds(String repoId,GraphDatabaseService graphService){
 		//A kind of cache FIXME: should be cleaned after each user
 		List<Long> ids = new LinkedList<Long>();
-		if(repoIds.contains(Long.valueOf(repoId))){
-			ids.add(Long.valueOf(repoId));
+		if(repoIds.containsKey(repoId)){
+			logger.debug("Returning from cache: "+repoId);
+			ids.add(repoIds.get(repoId));
 		}else{
 			String query = "match (n:REPO_NODE) where n.ID={id} return id(n);";
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put( "id", repoId );
 			long repoIdAsLong = runQuery(graphService,query, params, "id(n)").get(0);
-			repoIds.add(repoIdAsLong);
+			repoIds.put(repoId,repoIdAsLong);
 			ids.add(repoIdAsLong);
 		}
 		return ids;

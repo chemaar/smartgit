@@ -53,14 +53,19 @@ public class Neo4jDataSerializer implements DataSerializer {
 	@Override
 	public void serialize(List<Map<Enum, String>> csvData, Enum[] fields, List<LinkTO> links, LinkCreator linkCreator) throws IOException {
 		this.graphService = Neo4jDatabaseConnector.getGraphDatabaseService();
-		logger.debug("Serialize normal "+this.getClass().getCanonicalName());
+	//	logger.debug("Serialize normal "+this.getClass().getCanonicalName());
 		internalSerialize(csvData, fields);
-		logger.debug("Serialize links "+this.getClass().getCanonicalName());
+		//	logger.debug("Serialize links "+this.getClass().getCanonicalName());
 		if(links!=null && links.size()!=0 && linkCreator!=null){
-			System.out.println("Starting links "+links.size());
+			//logger.debug("Starting links "+links.size());
 			linkCreator.createLinks(links);
-			System.out.println("Ending links");
+			//logger.debug("Ending links");
+			links.clear();
+			links = null;
 		}
+		csvData.clear();
+		csvData = null;
+		fields = null;
 		logger.debug("End serialize normal "+this.getClass().getCanonicalName());
 		//Neo4jDatabaseConnector.returnGraphDatabaseService(this.graphService);
 	}

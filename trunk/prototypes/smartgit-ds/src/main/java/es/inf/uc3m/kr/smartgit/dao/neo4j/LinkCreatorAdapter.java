@@ -18,7 +18,7 @@ public abstract class LinkCreatorAdapter  implements LinkCreator{
 		boolean allCreated = true;
 		if(links != null){
 			this.graphService = getGraphService();
-			logger.info(links.size()+" are going to be created.");
+			logger.debug(links.size()+" are going to be created.");
 			for(LinkTO link:links){
 				if(link.idFrom!=null && link.idTo!=null && link.relation!=null){
 					logger.debug("Creating link from "+link.idFrom+" to "+link.idTo+" with relation "+link.relation);
