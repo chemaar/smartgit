@@ -58,6 +58,8 @@ public class GithubRepositoryDAOImpl extends GithubDumperEntityDAOAdapter {
 				link.relation = RelTypes.OWNER;
 				getLinks().add(link);
 			}
+			repos.clear();
+			repos = null;
 		}catch(Exception e){
 			logger.error(e);
 			throw e;

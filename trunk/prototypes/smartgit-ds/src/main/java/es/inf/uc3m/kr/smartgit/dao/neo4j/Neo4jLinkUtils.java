@@ -18,7 +18,10 @@ import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class Neo4jLinkUtils {
 
-	static Map<String, Long> repoIds = new HashMap<String, Long>();
+	private static final int MAX_REPOS = 1000;
+	static int MAX_COMMITS = 10000;
+	static Map<String, Long> repoIds = new HashMap<String, Long>(MAX_REPOS);
+	static Map<String, Long> commitIds = new HashMap<String, Long>();
 
 	protected static Logger logger = Logger.getLogger(Neo4jLinkUtils.class);
 	//FIXME: Control failures
@@ -38,17 +41,24 @@ public class Neo4jLinkUtils {
 
 	public static void cleanCache(){
 		repoIds.clear();
+		commitIds.clear();
 	}
 
 
 	public static long lookForInternalRepositoryId(String idRepository, GraphDatabaseService graphService) {
 		List<Long> ids = getInternalRepoIds(idRepository,graphService);
-		return ids.get(0);
+		long id = ids.get(0);
+		ids.clear();
+		ids = null;
+		return id;
 	}
 
 	public static long lookForInternalUserId(String loginOwner, GraphDatabaseService graphService) {
 		List<Long> ids = getInternalUserIds(loginOwner,graphService);
-		return ids.get(0);
+		long id = ids.get(0);
+		ids.clear();
+		ids = null;
+		return id;
 	}
 
 
@@ -71,6 +81,9 @@ public class Neo4jLinkUtils {
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put( "id", repoId );
 			long repoIdAsLong = runQuery(graphService,query, params, "id(n)").get(0);
+			if(repoIds.size()>MAX_REPOS){
+				repoIds.clear();
+			}
 			repoIds.put(repoId,repoIdAsLong);
 			ids.add(repoIdAsLong);
 		}
@@ -90,6 +103,11 @@ public class Neo4jLinkUtils {
 			}
 			tx.success();
 		}
+		if(params !=null){
+			params.clear();
+			params = null;
+		}
+		var = null;
 		return internalIds;
 	}
 
@@ -98,7 +116,10 @@ public class Neo4jLinkUtils {
 	public static long lookForInternalDownloadId(String idDownload,
 			GraphDatabaseService graphService) {
 		List<Long> ids = getInternalDownloadIds(idDownload,graphService);
-		return ids.get(0);
+		long id = ids.get(0);
+		ids.clear();
+		ids = null;
+		return id;
 	}
 
 	private static List<Long> getInternalDownloadIds(String idDownload,
@@ -112,7 +133,10 @@ public class Neo4jLinkUtils {
 	public static long lookForInternalIssueId(String idIssue,
 			GraphDatabaseService graphService) {
 		List<Long> ids = getInternalIssueIds(idIssue,graphService);
-		return ids.get(0);
+		long id = ids.get(0);
+		ids.clear();
+		ids = null;
+		return id;
 	}
 
 	private static List<Long> getInternalIssueIds(String idIssue,
@@ -127,7 +151,10 @@ public class Neo4jLinkUtils {
 	public static long lookForInternalLabelId(String idLabel,
 			GraphDatabaseService graphService) {
 		List<Long> ids = getInternalLabelIds(idLabel,graphService);
-		return ids.get(0);
+		long id = ids.get(0);
+		ids.clear();
+		ids = null;
+		return id;
 	}
 
 	private static List<Long> getInternalLabelIds(String idLabel,
@@ -142,7 +169,10 @@ public class Neo4jLinkUtils {
 	public static long lookForInternalMilestoneId(String idMilestone,
 			GraphDatabaseService graphService) {
 		List<Long> ids = getInternalMilestoneIds(idMilestone,graphService);
-		return ids.get(0);
+		long id = ids.get(0);
+		ids.clear();
+		ids = null;
+		return id;
 	}
 
 	private static List<Long> getInternalMilestoneIds(String idMilestone,
@@ -156,7 +186,10 @@ public class Neo4jLinkUtils {
 	public static long lookForInternalCommitId(String idCommit,
 			GraphDatabaseService graphService) {
 		List<Long> ids = getInternalCommitIds(idCommit,graphService);
-		return ids.get(0);
+		long id = ids.get(0);
+		ids.clear();
+		ids = null;
+		return id;
 	}
 
 	private static List<Long> getInternalCommitIds(String idCommit,

@@ -59,6 +59,8 @@ public class GithubMilestoneDAOImpl extends GithubDumperEntityDAOAdapter  {
 				link.relation = RelTypes.HAS_MILESTONE;
 				getLinks().add(link);
 			}
+			milestones.clear();
+			milestones = null;
 		}catch(org.eclipse.egit.github.core.client.RequestException e){
 			logger.error(e);
 		}

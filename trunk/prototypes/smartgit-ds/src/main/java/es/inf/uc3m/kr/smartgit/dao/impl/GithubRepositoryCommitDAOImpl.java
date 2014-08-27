@@ -58,6 +58,8 @@ public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter 
 				link.relation = RelTypes.HAS_COMMIT;
 				getLinks().add(link);
 			}
+			commits.clear();
+			commits = null;
 		}catch(Exception e){
 			logger.error(e);
 			throw e;

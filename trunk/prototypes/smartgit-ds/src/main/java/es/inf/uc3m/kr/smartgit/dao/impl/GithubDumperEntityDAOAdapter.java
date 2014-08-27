@@ -18,6 +18,15 @@ public abstract class GithubDumperEntityDAOAdapter implements GithubDumperEntity
 	public void serialize(Map<String, Object> params) throws Exception {
 		List<Map<Enum, String>> csvData = getDescription(params);
 		this.serializer.serialize(csvData,this.getFields(),this.getLinks(),this.linkCreator);
+		//Cleaning
+		if(csvData !=null){
+			for(Map<Enum, String> values:csvData){
+				values.clear();
+				values = null;
+			}
+			csvData.clear();
+			csvData = null;
+		}
 	}
 
 	public DataSerializer getSerializer() {

@@ -57,6 +57,8 @@ public class GithubIssueDAOImpl extends GithubDumperEntityDAOAdapter  {
 				getLinks().add(link);
 				//FIXME: LINK ISSUES TO CREATORS, ASSIGNEE, ETC.
 			}
+			issues.clear();
+			issues = null;
 		}catch(Exception e){
 			logger.error(e);
 			throw e;

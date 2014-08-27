@@ -44,6 +44,8 @@ public class GithubCollaboratorDAOImpl extends GithubDumperEntityDAOAdapter {
 				//User user = ((UserService) super.getService()).getUser(collaborator.getLogin());
 				csvData.add(describe(collaborator,repoID));
 			}
+			collaborators.clear();
+			collaborators = null;
 		}catch(Exception e){
 			logger.error(e);
 			throw e;

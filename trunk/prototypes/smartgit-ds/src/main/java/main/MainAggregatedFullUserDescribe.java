@@ -90,7 +90,7 @@ public class MainAggregatedFullUserDescribe {
 					logger.info("\t...milestones of user with login: "+userLogin+" in repository "+repo.getId());
 					main.createMilestones(userLogin, repo);
 					logger.info("\t...commits of user with login: "+userLogin+" in repository "+repo.getId());
-					main.createCommits(userLogin, repo);
+					//main.createCommits(userLogin, repo);
 					logger.info("\t...labels of user with login: "+userLogin+" in repository "+repo.getId());
 					main.createLabels(userLogin, repo);
 					logger.info("\t...downloads of user with login: "+userLogin+" in repository "+repo.getId());

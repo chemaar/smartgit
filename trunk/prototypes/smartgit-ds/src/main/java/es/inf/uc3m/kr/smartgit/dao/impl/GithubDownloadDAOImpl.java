@@ -62,6 +62,8 @@ public class GithubDownloadDAOImpl extends GithubDumperEntityDAOAdapter  {
 				link.relation = RelTypes.HAS_DOWNLOAD;
 				getLinks().add(link);
 			}
+			downloads.clear();
+			downloads = null;
 		}catch(Exception e){
 			logger.error(e);
 			throw e;

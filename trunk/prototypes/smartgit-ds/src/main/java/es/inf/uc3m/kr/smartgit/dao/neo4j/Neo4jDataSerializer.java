@@ -63,8 +63,16 @@ public class Neo4jDataSerializer implements DataSerializer {
 			links.clear();
 			links = null;
 		}
-		csvData.clear();
-		csvData = null;
+		//Cleaning here
+		if(csvData!=null){
+			for(Map<Enum, String> values:csvData){
+				values.clear();
+				values = null;
+			}
+			csvData.clear();
+			csvData = null;
+		}
+		
 		fields = null;
 		logger.debug("End serialize normal "+this.getClass().getCanonicalName());
 		//Neo4jDatabaseConnector.returnGraphDatabaseService(this.graphService);
