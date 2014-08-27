@@ -4,9 +4,12 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 
 public class GithubConnectionHelper {
 
+	static GitHubClient client; 
 	public static GitHubClient createConnection() {
-		GitHubClient client = new GitHubClient();
-		client.setOAuth2Token(GighubConfigProperties.getString("GithubRepositoryDAO.TOKEN")); 
+		if(client ==null){
+			client = new GitHubClient();
+			client.setOAuth2Token(GighubConfigProperties.getString("GithubRepositoryDAO.TOKEN")); 
+		}
 		return client;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Repository;
@@ -79,6 +80,7 @@ public class MainAggregatedFullUserDescribe {
 				params.put(GithubDumperEntityDAO.ALL_USER_LOGIN_PARAM,logins);
 				userDAO.serialize(params);
 				params.clear();
+				params = null;
 
 				logger.info("\t...repositories of user with login: "+userLogin);
 				main.createRepos(userLogin);
@@ -87,17 +89,24 @@ public class MainAggregatedFullUserDescribe {
 				for(Repository repo:repositoryService.getRepositories(userLogin)){
 					logger.info("\t...issues of user with login: "+userLogin+" in repository "+repo.getId());
 					main.createIssues(userLogin, repo);
+					main.waitNext();
 					logger.info("\t...milestones of user with login: "+userLogin+" in repository "+repo.getId());
 					main.createMilestones(userLogin, repo);
+					main.waitNext();
 					logger.info("\t...commits of user with login: "+userLogin+" in repository "+repo.getId());
-					//main.createCommits(userLogin, repo);
+					main.createCommits(userLogin, repo);
+					main.waitNext();
 					logger.info("\t...labels of user with login: "+userLogin+" in repository "+repo.getId());
 					main.createLabels(userLogin, repo);
+					main.waitNext();
 					logger.info("\t...downloads of user with login: "+userLogin+" in repository "+repo.getId());
 					main.createDownloads(userLogin, repo);
+					main.waitNext();
+					repo = null;
 				}
 				logger.info("End processing user with login: "+userLogin);
 				logins.clear();
+				userLogin = null;
 
 			}
 
@@ -111,6 +120,14 @@ public class MainAggregatedFullUserDescribe {
 
 	}
 
+	public void waitNext(){
+		try {
+		    TimeUnit.SECONDS.sleep(5);
+		    System.gc();
+		} catch (InterruptedException e) {
+		    //Handle exception
+		}
+	}
 	public void initRepositoryDAO(){
 		DataSerializer serializer = 
 				new Neo4jDataSerializer(RelTypes.REPO_NODE,false);

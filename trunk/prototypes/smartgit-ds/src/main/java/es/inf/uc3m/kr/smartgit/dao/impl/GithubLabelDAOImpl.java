@@ -54,6 +54,8 @@ public class GithubLabelDAOImpl extends GithubDumperEntityDAOAdapter  {
 				link.idTo = String.valueOf(label.hashCode());
 				link.relation = RelTypes.HAS_LABEL;
 				getLinks().add(link);
+//				label = null;
+//				link = null;
 			}
 			labels.clear();
 			labels = null;

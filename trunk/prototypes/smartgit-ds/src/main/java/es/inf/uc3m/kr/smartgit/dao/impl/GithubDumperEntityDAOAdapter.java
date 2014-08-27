@@ -21,11 +21,17 @@ public abstract class GithubDumperEntityDAOAdapter implements GithubDumperEntity
 		//Cleaning
 		if(csvData !=null){
 			for(Map<Enum, String> values:csvData){
-				values.clear();
-				values = null;
+				if(values != null){
+					values.clear();
+					values = null;
+				}
 			}
 			csvData.clear();
 			csvData = null;
+		}
+		if(this.links!=null){
+			this.links.clear();
+			this.links = null;
 		}
 	}
 
@@ -38,6 +44,9 @@ public abstract class GithubDumperEntityDAOAdapter implements GithubDumperEntity
 	}
 
 	public List<LinkTO> getLinks() {
+		if(this.links == null){
+			this.links =  new LinkedList<LinkTO>();
+		}
 		return links;
 	}
 

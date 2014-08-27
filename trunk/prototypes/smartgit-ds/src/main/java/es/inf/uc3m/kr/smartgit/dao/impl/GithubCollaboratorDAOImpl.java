@@ -43,6 +43,7 @@ public class GithubCollaboratorDAOImpl extends GithubDumperEntityDAOAdapter {
 				//FIXME: if there is a lot of collaborators: Repository access blocked (403)
 				//User user = ((UserService) super.getService()).getUser(collaborator.getLogin());
 				csvData.add(describe(collaborator,repoID));
+//				collaborator = null;
 			}
 			collaborators.clear();
 			collaborators = null;

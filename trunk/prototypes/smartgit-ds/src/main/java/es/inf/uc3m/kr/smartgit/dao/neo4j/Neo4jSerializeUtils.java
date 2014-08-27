@@ -25,9 +25,12 @@ public class Neo4jSerializeUtils {
 					Enum property = fields[i];
 					String value = repoData.get(fields[i]);
 					currentNode.setProperty( property.name(), (value==null?"N/A":value) );
+					value = null;
 				}
+				currentNode = null;
 			}
 			tx.success();
+			tx.close();
 		}
 	}
 	
@@ -41,10 +44,13 @@ public class Neo4jSerializeUtils {
 					Enum property = fields[i];
 					String value = repoData.get(fields[i]);
 					currentNode.setProperty( property.name(), (value==null?"N/A":value) );
+					value = null;
 				}
 				github.createRelationshipTo(currentNode,type);
+				currentNode = null;
 			}
 			tx.success();
+			tx.close();
 		}
 	}
 	

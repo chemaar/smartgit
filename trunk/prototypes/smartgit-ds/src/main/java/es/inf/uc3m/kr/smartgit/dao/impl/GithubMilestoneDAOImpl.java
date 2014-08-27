@@ -58,6 +58,8 @@ public class GithubMilestoneDAOImpl extends GithubDumperEntityDAOAdapter  {
 				link.idTo = String.valueOf(milestone.hashCode());
 				link.relation = RelTypes.HAS_MILESTONE;
 				getLinks().add(link);
+//				milestone = null;
+//				link = null;
 			}
 			milestones.clear();
 			milestones = null;

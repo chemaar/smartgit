@@ -37,6 +37,8 @@ public class GithubUserDAOImpl extends GithubDumperEntityDAOAdapter {
 				if (user != null){
 					csvData.add(describe(user));
 				}
+//				login = null;
+//				user = null;
 			}
 			allUserLogins.clear();
 			allUserLogins = null;
