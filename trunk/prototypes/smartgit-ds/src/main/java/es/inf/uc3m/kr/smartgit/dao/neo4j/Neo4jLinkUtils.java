@@ -255,6 +255,8 @@ public class Neo4jLinkUtils {
 				while ( results.hasNext() )	{
 					repoIdAsLong = results.next().getId();
 				}
+				results.close();
+				results = null;
 				tx.success();
 				tx.close();
 			}
@@ -280,6 +282,8 @@ public class Neo4jLinkUtils {
 			while ( results.hasNext() )	{
 				repoIdAsLong = results.next().getId();
 			}
+			results.close();
+			results = null;
 			tx.success();
 			tx.close();
 		}
@@ -301,6 +305,8 @@ public class Neo4jLinkUtils {
 			while ( results.hasNext() )	{
 				repoIdAsLong = results.next().getId();
 			}
+			results.close();
+			results = null;
 			tx.success();
 			tx.close();
 		}
@@ -320,9 +326,11 @@ public class Neo4jLinkUtils {
 			while ( results.hasNext() )	{
 				repoIdAsLong = results.next().getId();
 			}
+			results.close();
+			results = null;
 			tx.success();
 			tx.close();
-		}
+				}
 		return repoIdAsLong;
 	}
 
@@ -340,6 +348,8 @@ public class Neo4jLinkUtils {
 			while ( results.hasNext() )	{
 				repoIdAsLong = results.next().getId();
 			}
+			results.close();
+			results = null;
 			tx.success();
 			tx.close();
 		}
@@ -359,6 +369,8 @@ public class Neo4jLinkUtils {
 			while ( results.hasNext() )	{
 				repoIdAsLong = results.next().getId();
 			}
+			results.close();
+			results = null;
 			tx.success();
 			tx.close();
 		}
@@ -378,6 +390,8 @@ public class Neo4jLinkUtils {
 			while ( results.hasNext() )	{
 				repoIdAsLong = results.next().getId();
 			}
+			results.close();
+			results = null;
 			tx.success();
 			tx.close();
 		}

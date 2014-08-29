@@ -24,10 +24,12 @@ import es.inf.uc3m.kr.smartgit.dao.neo4j.LinkCreator;
 import es.inf.uc3m.kr.smartgit.dao.neo4j.Neo4jDatabaseConnector.RelTypes;
 
 public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter  {
-	
+
 	protected static Logger logger = Logger.getLogger(GithubRepositoryCommitDAOImpl.class);
-	
+
 	private CommitService service;
+
+	protected static int MAX_COMMITS = 100;
 
 
 	public GithubRepositoryCommitDAOImpl(CommitService service, DataSerializer serializer, LinkCreator linkCreator){
@@ -35,13 +37,13 @@ public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter 
 		setSerializer(serializer);
 		setLinkCreator(linkCreator);
 	}
-	
-	
+
+
 	public GithubRepositoryCommitDAOImpl(CommitService service, DataSerializer serializer){
 		this.service = service;
 		setSerializer(serializer);
 	}
-	
+
 	public List<Map<Enum,String>> getDescription(Map<String, Object> params) throws IOException{
 		List<Map<Enum,String>> csvData = new LinkedList<>();
 		try{
@@ -49,17 +51,24 @@ public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter 
 			List<RepositoryCommit> commits = ((CommitService) getService()).getCommits(repo);
 			long repoID = ((Repository)repo).getId();
 			logger.debug("The repository with id "+repoID+" has "+commits.size()+" commits.");
-			for(RepositoryCommit commit: commits){
-				//In case of needing memory, directly write here to a file...
-				csvData.add(describe(commit,repoID));
-				LinkTO link = new LinkTO();
-				link.idFrom = String.valueOf(repoID);
-				link.idTo = commit.getSha();
-				link.relation = RelTypes.HAS_COMMIT;
-				getLinks().add(link);
+			int ncommits = 0;
+			if(commits != null){
+				RepositoryCommit commit;
+				for (int i = 0; ncommits<MAX_COMMITS && i<commits.size();i++){
+					commit = commits.get(0);
+					//In case of needing memory, directly write here to a file...
+					csvData.add(describe(commit,repoID));
+					LinkTO link = new LinkTO();
+					link.idFrom = String.valueOf(repoID);
+					link.idTo = commit.getSha();
+					link.relation = RelTypes.HAS_COMMIT;
+					getLinks().add(link);
+					ncommits++;
+				}
+				commits.clear();
+				commits = null;
 			}
-			commits.clear();
-			commits = null;
+			
 		}catch(Exception e){
 			logger.error(e);
 			throw e;
@@ -116,5 +125,5 @@ public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter 
 		return CommitFields.values();
 	}
 
-	
+
 }
