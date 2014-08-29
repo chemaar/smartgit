@@ -33,7 +33,15 @@ public class Neo4jLinkUtils {
 	static int MAX_COMMITS = 10000;
 	static Map<String, Long> repoIds = new HashMap<String, Long>(MAX_REPOS);
 	static Map<String, Long> commitIds = new HashMap<String, Long>();
-
+	
+	static Label LABEL_REPO_NODE = DynamicLabel.label( RelTypes.REPO_NODE.name() );
+	static Label LABEL_USER_NODE = DynamicLabel.label( RelTypes.USER_NODE.name() );
+	static Label LABEL_DOWNLOAD_NODE = DynamicLabel.label( RelTypes.DOWNLOAD_NODE.name() );
+	static Label LABEL_ISSUE_NODE = DynamicLabel.label( RelTypes.ISSUE_NODE.name() );
+	static Label LABEL_LABEL_NODE = DynamicLabel.label( RelTypes.LABEL_NODE.name() );
+	static Label LABEL_MILESTONE_NODE = DynamicLabel.label( RelTypes.MILESTONE_NODE.name() );
+	static Label LABEL_COMMIT_NODE = DynamicLabel.label( RelTypes.COMMIT_NODE.name() );
+	
 	protected static Logger logger = Logger.getLogger(Neo4jLinkUtils.class);
 	//FIXME: Control failures
 
@@ -68,6 +76,7 @@ public class Neo4jLinkUtils {
 	}
 
 
+	
 
 	public static List<Long> getInternalRepoIds(String repoId,GraphDatabaseService graphService){
 		//A kind of cache FIXME: should be cleaned after each user
@@ -234,8 +243,28 @@ public class Neo4jLinkUtils {
 		return runQuery(graphService,query, params, "id(n)");
 	}
 
-	//Withouth CYPHER QUERIES
+//Withouth CYPHER QUERIES
 
+	private static long getInternalIdsAPI(String id,GraphDatabaseService graphService, Label label, String field) {
+		long idAsLong = -1;
+		try ( Transaction tx = graphService.beginTx() )	{
+			ResourceIterator<Node> results = graphService.
+					findNodesByLabelAndProperty(
+							label, 
+							field, 
+							id).iterator();
+			while ( results.hasNext() )	{
+				idAsLong = results.next().getId();
+			}
+			results.close();
+			results = null;
+			tx.success();
+			tx.close();
+		}
+		return idAsLong;
+	}
+	
+	
 	public static long getInternalRepoIdsAPI(String repoId,GraphDatabaseService graphService){
 		//A kind of cache FIXME: should be cleaned after each user
 		if(repoIds.containsKey(repoId)){
@@ -243,23 +272,23 @@ public class Neo4jLinkUtils {
 			return repoIds.get(repoId);
 		}else{
 			logger.debug("Getting from API");
-			Label label = DynamicLabel.label( RelTypes.REPO_NODE.name() );
-			long repoIdAsLong = -1;
-			try ( Transaction tx = graphService.beginTx() )	{
-				ResourceIterator<Node> results = graphService.
-						findNodesByLabelAndProperty(
-								label, 
-								RepositoryFields.ID.name(), 
-								repoId).iterator();
-
-				while ( results.hasNext() )	{
-					repoIdAsLong = results.next().getId();
-				}
-				results.close();
-				results = null;
-				tx.success();
-				tx.close();
-			}
+			long repoIdAsLong = getInternalIdsAPI(repoId, graphService, LABEL_REPO_NODE, RepositoryFields.ID.name());
+//			try ( Transaction tx = graphService.beginTx() )	{
+//				ResourceIterator<Node> results = graphService.
+//						findNodesByLabelAndProperty(
+//								LABEL_REPO_NODE, 
+//								RepositoryFields.ID.name(), 
+//								repoId).iterator();
+//
+//				while ( results.hasNext() )	{
+//					repoIdAsLong = results.next().getId();
+//				}
+//				results.close();
+//				results = null;
+//				tx.success();
+//				tx.close();
+//			}
+		
 
 			if(repoIds.size()>MAX_REPOS){
 				repoIds.clear();
@@ -270,131 +299,133 @@ public class Neo4jLinkUtils {
 	}
 
 	public static long getInternalUserIdsAPI(String userLogin,GraphDatabaseService graphService){
-		Label label = DynamicLabel.label( RelTypes.USER_NODE.name() );
-		long repoIdAsLong = -1;
-		try ( Transaction tx = graphService.beginTx() )	{
-			ResourceIterator<Node> results = graphService.
-					findNodesByLabelAndProperty(
-							label, 
-							UserFields.Login.name(), 
-							userLogin).iterator();
-
-			while ( results.hasNext() )	{
-				repoIdAsLong = results.next().getId();
-			}
-			results.close();
-			results = null;
-			tx.success();
-			tx.close();
-		}
-		//FIXME: Check if it is necessary
-		//		results.close();
-		//		results = null;
-		return repoIdAsLong;
+		return getInternalIdsAPI(userLogin, graphService, LABEL_USER_NODE, UserFields.Login.name());
+//		long repoIdAsLong = -1;
+//		try ( Transaction tx = graphService.beginTx() )	{
+//			ResourceIterator<Node> results = graphService.
+//					findNodesByLabelAndProperty(
+//							LABEL_USER_NODE, 
+//							UserFields.Login.name(), 
+//							userLogin).iterator();
+//
+//			while ( results.hasNext() )	{
+//				repoIdAsLong = results.next().getId();
+//			}
+//			results.close();
+//			results = null;
+//			tx.success();
+//			tx.close();
+//		}
+//		//FIXME: Check if it is necessary
+//		//		results.close();
+//		//		results = null;
+//		return repoIdAsLong;
 	}
 
+
+	//FIXME: refactor to just one method with parameters: Label and field
 	private static long getInternalDownloadIdsAPI(String idDownload,GraphDatabaseService graphService) {
-		Label label = DynamicLabel.label( RelTypes.DOWNLOAD_NODE.name() );
-		long repoIdAsLong = -1;
-		try ( Transaction tx = graphService.beginTx() )	{
-			ResourceIterator<Node> results = graphService.
-					findNodesByLabelAndProperty(
-							label, 
-							DownloadFields.ID.name(), 
-							idDownload).iterator();
-			while ( results.hasNext() )	{
-				repoIdAsLong = results.next().getId();
-			}
-			results.close();
-			results = null;
-			tx.success();
-			tx.close();
-		}
-		return repoIdAsLong;
+		return getInternalIdsAPI(idDownload, graphService, LABEL_DOWNLOAD_NODE, DownloadFields.ID.name());
+//		long idAsLong = -1;
+//		try ( Transaction tx = graphService.beginTx() )	{
+//			ResourceIterator<Node> results = graphService.
+//					findNodesByLabelAndProperty(
+//							LABEL_DOWNLOAD_NODE, 
+//							DownloadFields.ID.name(), 
+//							idDownload).iterator();
+//			while ( results.hasNext() )	{
+//				idAsLong = results.next().getId();
+//			}
+//			results.close();
+//			results = null;
+//			tx.success();
+//			tx.close();
+//		}
+//		return idAsLong;
 	}
 
 	private static long getInternalIssueIdsAPI(String idIssue,
 			GraphDatabaseService graphService) {
-		Label label = DynamicLabel.label( RelTypes.ISSUE_NODE.name() );
-		long repoIdAsLong = -1;
-		try ( Transaction tx = graphService.beginTx() )	{
-			ResourceIterator<Node> results = graphService.
-					findNodesByLabelAndProperty(
-							label, 
-							IssueFields.ID.name(), 
-							idIssue).iterator();
-			while ( results.hasNext() )	{
-				repoIdAsLong = results.next().getId();
-			}
-			results.close();
-			results = null;
-			tx.success();
-			tx.close();
-				}
-		return repoIdAsLong;
+		return getInternalIdsAPI(idIssue, graphService, LABEL_ISSUE_NODE, IssueFields.ID.name());
+//		long repoIdAsLong = -1;
+//		try ( Transaction tx = graphService.beginTx() )	{
+//			ResourceIterator<Node> results = graphService.
+//					findNodesByLabelAndProperty(
+//							LABEL_ISSUE_NODE, 
+//							IssueFields.ID.name(), 
+//							idIssue).iterator();
+//			while ( results.hasNext() )	{
+//				repoIdAsLong = results.next().getId();
+//			}
+//			results.close();
+//			results = null;
+//			tx.success();
+//			tx.close();
+//				}
+//		return repoIdAsLong;
 	}
 
 	private static long getInternalLabelIdsAPI(String idLabel,
 			GraphDatabaseService graphService) {
-		Label label = DynamicLabel.label( RelTypes.LABEL_NODE.name() );
-		long repoIdAsLong = -1;
-		try ( Transaction tx = graphService.beginTx() )	{
-			ResourceIterator<Node> results = graphService.
-					findNodesByLabelAndProperty(
-							label, 
-							LabelFields.ID.name(), 
-							idLabel).iterator();
-
-			while ( results.hasNext() )	{
-				repoIdAsLong = results.next().getId();
-			}
-			results.close();
-			results = null;
-			tx.success();
-			tx.close();
-		}
-		return repoIdAsLong;
+		return getInternalIdsAPI(idLabel, graphService, LABEL_LABEL_NODE, LabelFields.ID.name());
+//		long repoIdAsLong = -1;
+//		try ( Transaction tx = graphService.beginTx() )	{
+//			ResourceIterator<Node> results = graphService.
+//					findNodesByLabelAndProperty(
+//							LABEL_LABEL_NODE, 
+//							LabelFields.ID.name(), 
+//							idLabel).iterator();
+//
+//			while ( results.hasNext() )	{
+//				repoIdAsLong = results.next().getId();
+//			}
+//			results.close();
+//			results = null;
+//			tx.success();
+//			tx.close();
+//		}
+//		return repoIdAsLong;
 	}
 	private static long getInternalMilestoneIdsAPI(String idMilestone,
 			GraphDatabaseService graphService) {
-		Label label = DynamicLabel.label( RelTypes.MILESTONE_NODE.name() );
-		long repoIdAsLong = -1;
-		try ( Transaction tx = graphService.beginTx() )	{
-			ResourceIterator<Node> results = graphService.
-					findNodesByLabelAndProperty(
-							label, 
-							MilestoneFields.ID.name(), 
-							idMilestone).iterator();
-
-			while ( results.hasNext() )	{
-				repoIdAsLong = results.next().getId();
-			}
-			results.close();
-			results = null;
-			tx.success();
-			tx.close();
-		}
-		return repoIdAsLong;
+		return getInternalIdsAPI(idMilestone, graphService, LABEL_MILESTONE_NODE, MilestoneFields.ID.name());
+//		long repoIdAsLong = -1;
+//		try ( Transaction tx = graphService.beginTx() )	{
+//			ResourceIterator<Node> results = graphService.
+//					findNodesByLabelAndProperty(
+//							LABEL_MILESTONE_NODE, 
+//							MilestoneFields.ID.name(), 
+//							idMilestone).iterator();
+//
+//			while ( results.hasNext() )	{
+//				repoIdAsLong = results.next().getId();
+//			}
+//			results.close();
+//			results = null;
+//			tx.success();
+//			tx.close();
+//		}
+//		return repoIdAsLong;
 	}
 
 	private static long getInternalCommitIdsAPI(String idCommit,
 			GraphDatabaseService graphService) {
-		Label label = DynamicLabel.label( RelTypes.COMMIT_NODE.name() );
-		long repoIdAsLong = -1;
-		try ( Transaction tx = graphService.beginTx() )	{
-			ResourceIterator<Node> results = graphService.
-					findNodesByLabelAndProperty(
-							label, 
-							CommitFields.SHA.name(), 
-							idCommit).iterator();
-			while ( results.hasNext() )	{
-				repoIdAsLong = results.next().getId();
-			}
-			results.close();
-			results = null;
-			tx.success();
-			tx.close();
-		}
-		return repoIdAsLong;
+		return getInternalIdsAPI(idCommit, graphService, LABEL_COMMIT_NODE, CommitFields.SHA.name());
+//		long repoidaslong = -1;
+//		try ( transaction tx = graphservice.begintx() )	{
+//			resourceiterator<node> results = graphservice.
+//					findnodesbylabelandproperty(
+//							label_commit_node, 
+//							commitfields.sha.name(), 
+//							idcommit).iterator();
+//			while ( results.hasnext() )	{
+//				repoidaslong = results.next().getid();
+//			}
+//			results.close();
+//			results = null;
+//			tx.success();
+//			tx.close();
+//		}
+//		return repoidaslong;
 	}
 }
