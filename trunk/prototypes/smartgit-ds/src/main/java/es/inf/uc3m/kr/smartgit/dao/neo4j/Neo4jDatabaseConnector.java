@@ -27,7 +27,7 @@ public class Neo4jDatabaseConnector {
 		DOWNLOAD_NODE, OWNER, HAS_DOWNLOAD, HAS_ISSUE, HAS_LABEL, HAS_COMMIT, HAS_MILESTONE
 	}
 
-	private static final String SMARTGIT_DB = "target/smartgit-test-nc-db"; //FIXME: Extract
+	private static final String SMARTGIT_DB = "target/smartgit-test-nc-db-2"; //FIXME: Extract
 	private static GraphDatabaseService graphDb;
 	private static long smartgitNodeId;
 

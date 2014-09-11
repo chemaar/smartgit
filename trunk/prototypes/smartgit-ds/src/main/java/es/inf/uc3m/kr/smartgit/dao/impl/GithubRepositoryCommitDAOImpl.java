@@ -55,7 +55,7 @@ public class GithubRepositoryCommitDAOImpl extends GithubDumperEntityDAOAdapter 
 			if(commits != null){
 				RepositoryCommit commit;
 				for (int i = 0; ncommits<MAX_COMMITS && i<commits.size();i++){
-					commit = commits.get(0);
+					commit = commits.get(i);
 					//In case of needing memory, directly write here to a file...
 					csvData.add(describe(commit,repoID));
 					LinkTO link = new LinkTO();

@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.client.RequestException;
 import org.eclipse.egit.github.core.service.CommitService;
 import org.eclipse.egit.github.core.service.DownloadService;
 import org.eclipse.egit.github.core.service.IssueService;
@@ -48,7 +49,7 @@ public class MainAggregatedFullUserDescribe {
 	private GithubDownloadDAOImpl downloadsDAO;
 	private GithubIssueDAOImpl issuesDAO;
 	private GithubMilestoneDAOImpl milestonesDAO;
-	
+
 	public MainAggregatedFullUserDescribe(){
 		this.initCommitDAO();
 		this.initDownloadsDAO();
@@ -57,7 +58,7 @@ public class MainAggregatedFullUserDescribe {
 		this.initMilestonesDAO();
 		this.initRepositoryDAO();
 	}
-	
+
 
 	public static void main(String []args) throws Exception {
 		MainAggregatedFullUserDescribe main = new MainAggregatedFullUserDescribe();
@@ -73,43 +74,50 @@ public class MainAggregatedFullUserDescribe {
 			UserService service = new UserService(GithubConnectionHelper.createConnection());
 			GithubDumperEntityDAO userDAO = new GithubUserDAOImpl(service, serializer);
 			while(usersLogin.hasMoreElements()){
-				userLogin = usersLogin.nextElement();
-				logger.info("Processing user with login: "+userLogin);				
-				logins.add(userLogin);
-				Map<String, Object> params = new HashMap<String,Object>();
-				params.put(GithubDumperEntityDAO.ALL_USER_LOGIN_PARAM,logins);
-				userDAO.serialize(params);
-				params.clear();
-				params = null;
+				try{
+					userLogin = usersLogin.nextElement();
+					logger.info("Processing user with login: "+userLogin);				
+					logins.add(userLogin);
+					Map<String, Object> params = new HashMap<String,Object>();
+					params.put(GithubDumperEntityDAO.ALL_USER_LOGIN_PARAM,logins);
+					userDAO.serialize(params);
+					params.clear();
+					params = null;
 
-				logger.info("\t...repositories of user with login: "+userLogin);
-				main.createRepos(userLogin);
-				//Create commits for repos
-				RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
-				for(Repository repo:repositoryService.getRepositories(userLogin)){
-					logger.info("\t...issues of user with login: "+userLogin+" in repository "+repo.getId());
-					main.createIssues(userLogin, repo);
-					main.waitNext();
-					logger.info("\t...milestones of user with login: "+userLogin+" in repository "+repo.getId());
-					main.createMilestones(userLogin, repo);
-					main.waitNext();
-					logger.info("\t...commits of user with login: "+userLogin+" in repository "+repo.getId());
-					main.createCommits(userLogin, repo);
-					main.waitNext();
-					logger.info("\t...labels of user with login: "+userLogin+" in repository "+repo.getId());
-					main.createLabels(userLogin, repo);
-					main.waitNext();
-					logger.info("\t...downloads of user with login: "+userLogin+" in repository "+repo.getId());
-					main.createDownloads(userLogin, repo);
-					main.waitNext();
-					repo = null;
+					logger.info("\t...repositories of user with login: "+userLogin);
+					main.createRepos(userLogin);
+					//Create commits for repos
+					RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
+
+					for(Repository repo:repositoryService.getRepositories(userLogin)){
+						try{	
+							logger.info("\t...issues of user with login: "+userLogin+" in repository "+repo.getId());
+							main.createIssues(userLogin, repo);
+							main.waitNext();
+							logger.info("\t...milestones of user with login: "+userLogin+" in repository "+repo.getId());
+							main.createMilestones(userLogin, repo);
+							main.waitNext();
+							logger.info("\t...commits of user with login: "+userLogin+" in repository "+repo.getId());
+							//main.createCommits(userLogin, repo);
+							main.waitNext();
+							logger.info("\t...labels of user with login: "+userLogin+" in repository "+repo.getId());
+							main.createLabels(userLogin, repo);
+							main.waitNext();
+							logger.info("\t...downloads of user with login: "+userLogin+" in repository "+repo.getId());
+							main.createDownloads(userLogin, repo);
+							main.waitNext();
+							repo = null;
+						}catch(Exception e){
+							logger.error("Exception describing a repository..."+e);
+						}
+					}
+					logger.info("End processing user with login: "+userLogin);
+					logins.clear();
+					userLogin = null;
+				}catch(Exception e){
+					logger.error("Exception describing user..."+e);
 				}
-				logger.info("End processing user with login: "+userLogin);
-				logins.clear();
-				userLogin = null;
-
 			}
-
 		}catch(Exception e){
 			logger.error(e);
 		}
@@ -122,10 +130,10 @@ public class MainAggregatedFullUserDescribe {
 
 	public void waitNext(){
 		try {
-		    TimeUnit.SECONDS.sleep(5);
-		    System.gc();
+			TimeUnit.SECONDS.sleep(2);
+			System.gc();
 		} catch (InterruptedException e) {
-		    //Handle exception
+			//Handle exception
 		}
 	}
 	public void initRepositoryDAO(){
@@ -163,7 +171,7 @@ public class MainAggregatedFullUserDescribe {
 		IssueService service = new IssueService(GithubConnectionHelper.createConnection());
 		this.issuesDAO = new GithubIssueDAOImpl(service, serializer, new IssueRepoLinkCreator());
 	}
-	
+
 	public void initMilestonesDAO(){
 		DataSerializer serializer = 
 				new Neo4jDataSerializer(RelTypes.MILESTONE_NODE,false);
