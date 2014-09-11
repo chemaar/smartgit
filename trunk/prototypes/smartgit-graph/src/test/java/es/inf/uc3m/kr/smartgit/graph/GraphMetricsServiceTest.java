@@ -16,7 +16,7 @@ public class GraphMetricsServiceTest {
 		GraphLoader loader = new GephiFileResourceLoaderImpl();
 		loader.load("polblogs.gml");
 		GraphMetricsService metrics = new GraphMetricsService(loader);
-		Assert.assertEquals(2, metrics.calculateMetrics().size());
+		Assert.assertEquals(1492, metrics.calculateMetrics().size());
 	}
 
 }

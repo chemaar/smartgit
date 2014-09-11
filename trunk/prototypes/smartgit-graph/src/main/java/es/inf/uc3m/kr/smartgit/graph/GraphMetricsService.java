@@ -10,6 +10,7 @@ import org.gephi.filters.api.FilterController;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.preview.api.PreviewController;
@@ -68,6 +69,12 @@ public class GraphMetricsService {
 		distance.execute(this.graphModel, this.attributeModel );
 		AttributeColumn centralityColumn = attributeModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 		
+		for(Node n:graph.getNodes()){
+			Double centrality = (Double) n.getNodeData().getAttributes().getValue(centralityColumn.getIndex());
+			MetricTO centralityMetric = 
+					new MetricTO("Centrality","Centrality for node: "+n.getId(),"",centrality.doubleValue());
+			metrics.add(centralityMetric);
+		}
 //		Ranking centralityRanking = rankingController.getModel().getRanking(Ranking.NODE_ELEMENT, centralityColumn.getId());
 
 		return metrics;
