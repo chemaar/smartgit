@@ -48,6 +48,7 @@ public class DumpRepository implements GitHubDumper {
 		values.put(RepositoryFields.ID, String.valueOf(repository.getId()));
 		values.put(RepositoryFields.Name, repository.getName());
 		values.put(RepositoryFields.Created, (repository.getCreatedAt()!=null?repository.getCreatedAt().toString():null));
+		values.put(RepositoryFields.Update, (repository.getUpdatedAt()!=null?repository.getUpdatedAt().toString():null));
 		values.put(RepositoryFields.Description, repository.getDescription());
 		values.put(RepositoryFields.Homepage, repository.getHomepage());
 		values.put(RepositoryFields.HTML_URL, repository.getHtmlUrl());
@@ -59,6 +60,14 @@ public class DumpRepository implements GitHubDumper {
 		values.put(RepositoryFields.Forks, String.valueOf(repository.getForks()));
 		values.put(RepositoryFields.Owner_ID, (repository.getOwner()!=null?String.valueOf(repository.getOwner().getId()):null));
 		values.put(RepositoryFields.Owner_Login, (repository.getOwner()!=null?String.valueOf(repository.getOwner().getLogin()):null));
+		values.put(RepositoryFields.N_Forks, String.valueOf(repository.getForks()));
+		values.put(RepositoryFields.N_Open_Issues, String.valueOf(repository.getOpenIssues()));
+		values.put(RepositoryFields.ID_Parent, (repository.getParent()!=null?String.valueOf(repository.getParent().getId()):null));
+		values.put(RepositoryFields.N_Watchers,String.valueOf(repository.getWatchers()));
+
+
+
+		
 		return values;
 	}
 

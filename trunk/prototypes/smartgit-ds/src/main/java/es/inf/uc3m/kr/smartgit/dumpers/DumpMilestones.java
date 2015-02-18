@@ -57,8 +57,8 @@ public class DumpMilestones implements GitHubDumper {
 		values.put(MilestoneFields.Creator, (milestone.getCreator()!=null?milestone.getCreator().getLogin():null));
 		values.put(MilestoneFields.Created,(milestone.getCreatedAt()!=null?milestone.getCreatedAt().toString():null));
 		values.put(MilestoneFields.Due_ON,(milestone.getDueOn()!=null?milestone.getDueOn().toString():null));
-		values.put(MilestoneFields.Open_Issues,""+milestone.getOpenIssues());
-		values.put(MilestoneFields.Closed_Issues,""+milestone.getClosedIssues());
+		values.put(MilestoneFields.Open_Issues,String.valueOf(milestone.getOpenIssues()));
+		values.put(MilestoneFields.Closed_Issues,String.valueOf(+milestone.getClosedIssues()));
 		values.put(MilestoneFields.URL,milestone.getUrl());		
 
 		return values;

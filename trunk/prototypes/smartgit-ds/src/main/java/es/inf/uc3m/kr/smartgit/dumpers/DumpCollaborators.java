@@ -55,8 +55,8 @@ public class DumpCollaborators extends DumpUser {
 	private Map<Enum,String> describe(User user, long id) {
 		//Map<Enum,String> values = super.describe(user);
 		Map<Enum,String> values = new HashMap<Enum,String>();
-		values.put(CollaboratorFields.Type, CollaboratorFields.Collaborator.name());
 		values.put(CollaboratorFields.ID_Repo, String.valueOf(id));
+		values.put(CollaboratorFields.Type, CollaboratorFields.Collaborator.name());
 		values.put(CollaboratorFields.Login, user.getLogin());
 		return values;
 	}

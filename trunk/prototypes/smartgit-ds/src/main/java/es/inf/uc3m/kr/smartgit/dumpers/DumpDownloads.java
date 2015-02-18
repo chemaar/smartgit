@@ -48,13 +48,13 @@ public class DumpDownloads implements GitHubDumper {
 	private Map<Enum,String> describe(Download download, long id) {
 		Map<Enum,String> values = new HashMap<Enum,String>();
 		values.put(DownloadFields.Type, DownloadFields.Download.name());
-		values.put(DownloadFields.ID_Repo,""+id); 
-		values.put(DownloadFields.ID,""+download.getId());
+		values.put(DownloadFields.ID_Repo,String.valueOf(id)); 
+		values.put(DownloadFields.ID,String.valueOf(download.getId()));
 		values.put(DownloadFields.Name,download.getName());
 		values.put(DownloadFields.Description,download.getDescription());
 		values.put(DownloadFields.URL,download.getUrl());
 		values.put(DownloadFields.Content_Type,download.getContentType());
-		values.put(DownloadFields.Count,""+download.getDownloadCount());
+		values.put(DownloadFields.Count,String.valueOf(download.getDownloadCount()));
 		values.put(DownloadFields.HTML_URL,download.getHtmlUrl());
 		values.put(DownloadFields.Size,""+download.getSize());
 			return values;

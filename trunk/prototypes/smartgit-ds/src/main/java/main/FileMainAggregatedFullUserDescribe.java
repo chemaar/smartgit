@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.client.RequestException;
+import org.eclipse.egit.github.core.service.CollaboratorService;
 import org.eclipse.egit.github.core.service.CommitService;
 import org.eclipse.egit.github.core.service.DownloadService;
 import org.eclipse.egit.github.core.service.IssueService;
@@ -23,6 +24,7 @@ import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.UserLoginIDProperties;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
 import es.inf.uc3m.kr.smartgit.dao.impl.FileDataSerializer;
+import es.inf.uc3m.kr.smartgit.dao.impl.GithubCollaboratorDAOImpl;
 import es.inf.uc3m.kr.smartgit.dao.impl.GithubDownloadDAOImpl;
 import es.inf.uc3m.kr.smartgit.dao.impl.GithubDumperEntityDAO;
 import es.inf.uc3m.kr.smartgit.dao.impl.GithubIssueDAOImpl;
@@ -50,6 +52,7 @@ public class FileMainAggregatedFullUserDescribe {
 	private GithubDownloadDAOImpl downloadsDAO;
 	private GithubIssueDAOImpl issuesDAO;
 	private GithubMilestoneDAOImpl milestonesDAO;
+	private GithubCollaboratorDAOImpl collaboratorsDAO;
 
 	public FileMainAggregatedFullUserDescribe(){
 		this.initCommitDAO();
@@ -58,7 +61,9 @@ public class FileMainAggregatedFullUserDescribe {
 		this.initLabelDAO();
 		this.initMilestonesDAO();
 		this.initRepositoryDAO();
+		this.initCollaboratorsDAO();
 	}
+
 
 
 	public static void main(String []args) throws Exception {
@@ -98,13 +103,16 @@ public class FileMainAggregatedFullUserDescribe {
 							main.createMilestones(userLogin, repo);
 							main.waitNext();
 							logger.info("\t...commits of user with login: "+userLogin+" in repository "+repo.getId());
-							//main.createCommits(userLogin, repo);
+							main.createCommits(userLogin, repo);
 							main.waitNext();
 							logger.info("\t...labels of user with login: "+userLogin+" in repository "+repo.getId());
 							main.createLabels(userLogin, repo);
 							main.waitNext();
 							logger.info("\t...downloads of user with login: "+userLogin+" in repository "+repo.getId());
 							main.createDownloads(userLogin, repo);
+							main.waitNext();
+							logger.info("\t...collaborators of user with login: "+userLogin+" in repository "+repo.getId());
+							main.createCollaborators(userLogin, repo);
 							main.waitNext();
 							repo = null;
 						}catch(Exception e){
@@ -130,7 +138,7 @@ public class FileMainAggregatedFullUserDescribe {
 
 	public void waitNext(){
 		try {
-			TimeUnit.SECONDS.sleep(2);
+			TimeUnit.MILLISECONDS.sleep(500);
 			System.gc();
 		} catch (InterruptedException e) {
 			//Handle exception
@@ -180,6 +188,16 @@ public class FileMainAggregatedFullUserDescribe {
 	}
 
 
+	private void initCollaboratorsDAO() {
+		DataSerializer serializer = 
+				new FileDataSerializer(OUTPUT_DIR+RelTypes.COLLABORATOR_NODE+OUTPUT_EXT);
+		CollaboratorService service = new CollaboratorService(GithubConnectionHelper.createConnection());
+		this.collaboratorsDAO = new GithubCollaboratorDAOImpl(service, serializer);
+		
+	}
+
+	
+
 	public void createRepos(String login) throws Exception{
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put(GithubDumperEntityDAO.USER_LOGIN_PARAM,login);
@@ -224,6 +242,15 @@ public class FileMainAggregatedFullUserDescribe {
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put(GithubDumperEntityDAO.REPO_CONSTANT_PARAM,repo);
 		this.milestonesDAO.serialize(params);
+		params.clear();
+		params = null;
+
+	}
+	
+	public void createCollaborators(String login, Repository repo) throws Exception{
+		Map<String, Object> params = new HashMap<String,Object>();
+		params.put(GithubDumperEntityDAO.REPO_CONSTANT_PARAM,repo);
+		this.collaboratorsDAO.serialize(params);
 		params.clear();
 		params = null;
 

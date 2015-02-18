@@ -55,15 +55,23 @@ public class DumpUser implements GitHubDumper {
 		values.put(UserFields.Location,user.getLocation()); 
 		values.put(UserFields.Avatar,user.getAvatarUrl()); 
 		values.put(UserFields.Blog,user.getBlog()); 
-		values.put(UserFields.Collaborators,""+user.getCollaborators()); 
+		values.put(UserFields.Collaborators,String.valueOf(user.getCollaborators())); 
 		values.put(UserFields.Company,user.getCompany()); 
-		values.put(UserFields.Disk_Usage,""+user.getDiskUsage()); 
+		values.put(UserFields.Disk_Usage,String.valueOf(user.getDiskUsage())); 
 		values.put(UserFields.Email,user.getEmail()); 
-		values.put(UserFields.Followers,""+user.getFollowers()); 
-		values.put(UserFields.Following,""+user.getFollowing()); 
+		values.put(UserFields.Followers,String.valueOf(user.getFollowers())); 
+		values.put(UserFields.Following,String.valueOf(user.getFollowing())); 
 		values.put(UserFields.Gravatar_ID,user.getGravatarId()); 
-		values.put(UserFields.Public_Repos,""+user.getPublicRepos()); 
-		values.put(UserFields.Private_Repos,""+user.getTotalPrivateRepos()); 
+		values.put(UserFields.Public_Repos,String.valueOf(user.getPublicRepos())); 
+		values.put(UserFields.Private_Repos,String.valueOf(user.getTotalPrivateRepos()));
+		values.put(UserFields.Owned_Private_Repos,String.valueOf(user.getOwnedPrivateRepos())); 
+		user.getOwnedPrivateRepos();
+		if(user.getPlan() != null){
+			values.put(UserFields.Plan_Collaborators, String.valueOf(user.getPlan().getCollaborators()));
+			values.put(UserFields.Plan_Name, user.getPlan().getName());
+			values.put(UserFields.Plan_Space, String.valueOf(user.getPlan().getSpace()));
+		}
+		
 		return values;
 	}
 

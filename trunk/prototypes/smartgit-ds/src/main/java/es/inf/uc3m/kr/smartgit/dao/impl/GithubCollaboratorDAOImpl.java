@@ -49,7 +49,6 @@ public class GithubCollaboratorDAOImpl extends GithubDumperEntityDAOAdapter {
 			collaborators = null;
 		}catch(Exception e){
 			logger.error(e);
-			throw e;
 		}
 		
 		return csvData;
