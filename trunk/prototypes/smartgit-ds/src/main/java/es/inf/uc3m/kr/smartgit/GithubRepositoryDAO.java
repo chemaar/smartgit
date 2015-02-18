@@ -73,8 +73,12 @@ public class GithubRepositoryDAO {
 		System.out.println("Source: "+repo.getSource()); 
 		System.out.println("Watchers: "+repo.getWatchers()); 
 		System.out.println("Owner: "+repo.getOwner().getId()); 
+		try{
 		List<User> collaborators = this.collaboratorService.getCollaborators(repo);
-		System.out.println("Number of collaborators: "+collaborators.size()); 
+		System.out.println("Number of collaborators: "+collaborators.size());
+		}catch(Exception e){
+			System.err.println("Error accessing collaborators: "+e);
+		}
 	
 		//Describe commits
 		List<RepositoryCommit> commits = this.commitService.getCommits(repo);
