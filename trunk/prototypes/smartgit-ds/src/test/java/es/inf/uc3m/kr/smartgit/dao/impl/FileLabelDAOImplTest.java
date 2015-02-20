@@ -17,7 +17,7 @@ public class FileLabelDAOImplTest {
 	@Test
 	public void test() throws Exception {
 		String DUMP_FILE="label-dump.txt";
-		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
+		DataSerializer serializer = new FileDataSerializer(DUMP_FILE,"FIXME");
 		LabelService service = new LabelService(GithubConnectionHelper.createConnection());
 		RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
 		GithubDumperEntityDAO dao = new GithubLabelDAOImpl(service, serializer);

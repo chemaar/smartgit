@@ -17,7 +17,7 @@ public class FileMilestoneDAOImplTest {
 	@Test
 	public void test() throws Exception {
 		String DUMP_FILE="milestone-dump.txt";
-		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
+		DataSerializer serializer = new FileDataSerializer(DUMP_FILE,"FIXME");
 		MilestoneService service = new MilestoneService(GithubConnectionHelper.createConnection());
 		RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
 		GithubDumperEntityDAO dao = new GithubMilestoneDAOImpl(service, serializer);

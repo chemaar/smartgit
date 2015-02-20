@@ -20,6 +20,7 @@ import org.eclipse.egit.github.core.service.MilestoneService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
 
+import es.inf.uc3m.kr.smartgit.FileUserLoginIDProperties;
 import es.inf.uc3m.kr.smartgit.GithubConnectionHelper;
 import es.inf.uc3m.kr.smartgit.UserLoginIDProperties;
 import es.inf.uc3m.kr.smartgit.dao.DataSerializer;
@@ -43,9 +44,12 @@ import es.inf.uc3m.kr.smartgit.dumpers.SmartGitNeo4j.RelTypes;
 
 public class FileMainAggregatedFullUserDescribe {
 
+	public static final String ID_SEPARATOR = "_";
 	protected static Logger logger = Logger.getLogger(FileMainAggregatedFullUserDescribe.class);
-	public static String OUTPUT_DIR="G:\\smartgit\\";
+	//public static String OUTPUT_DIR_STATIC="G:\\smartgit\\";
 	public static String OUTPUT_EXT=".csv";
+	public static final String LINK_FILE = "LINKS";
+
 	private GithubRepositoryDAOImpl repositoryDao;
 	private GithubRepositoryCommitDAOImpl commitDAO;
 	private GithubLabelDAOImpl labelDAO;
@@ -54,149 +58,161 @@ public class FileMainAggregatedFullUserDescribe {
 	private GithubMilestoneDAOImpl milestonesDAO;
 	private GithubCollaboratorDAOImpl collaboratorsDAO;
 
-	public FileMainAggregatedFullUserDescribe(){
-		this.initCommitDAO();
-		this.initDownloadsDAO();
-		this.initIssuesDAO();
-		this.initLabelDAO();
-		this.initMilestonesDAO();
-		this.initRepositoryDAO();
-		this.initCollaboratorsDAO();
+	public FileMainAggregatedFullUserDescribe(String outputDir, String id){
+		String linkFile = outputDir+LINK_FILE+ID_SEPARATOR+id+OUTPUT_EXT;
+		this.initCommitDAO(outputDir,id,linkFile);
+		this.initDownloadsDAO(outputDir,id,linkFile);
+		this.initIssuesDAO(outputDir,id,linkFile);
+		this.initLabelDAO(outputDir,id,linkFile);
+		this.initMilestonesDAO(outputDir,id,linkFile);
+		this.initRepositoryDAO(outputDir,id,linkFile);
+		this.initCollaboratorsDAO(outputDir,id,linkFile);
 	}
 
 
 
 	public static void main(String []args) throws Exception {
-		FileMainAggregatedFullUserDescribe main = new FileMainAggregatedFullUserDescribe();
-		System.out.println("Starting..."+GregorianCalendar.getInstance().getTime().toString());
-		Enumeration<String> usersLogin = UserLoginIDProperties.RESOURCE_BUNDLE.getKeys();
-		String userLogin;
-		try{
-			logger.info("Start time "+GregorianCalendar.getInstance().getTime().toString());
-			DataSerializer serializer = new FileDataSerializer(
-					OUTPUT_DIR+RelTypes.USER_NODE.name()+OUTPUT_EXT);
-			List<String> logins = new LinkedList<String>();
-			UserService service = new UserService(GithubConnectionHelper.createConnection());
-			GithubDumperEntityDAO userDAO = new GithubUserDAOImpl(service, serializer);
-			while(usersLogin.hasMoreElements()){
-				try{
-					userLogin = usersLogin.nextElement();
-					logger.info("Processing user with login: "+userLogin);				
-					logins.add(userLogin);
-					Map<String, Object> params = new HashMap<String,Object>();
-					params.put(GithubDumperEntityDAO.ALL_USER_LOGIN_PARAM,logins);
-					userDAO.serialize(params);
-					params.clear();
-					params = null;
+		if(args.length!=3){
+			System.err.println("<output_dir> <path_logins_file> <id>");
+		}else{
+			String OUTPUT_DIR = args[0]+"\\";
+			String usersFile = args[1];
+			String id = args[2];
+			logger.info("Smartgit: getting info from users file: "+usersFile+" to store in: "+OUTPUT_DIR);
+			FileUserLoginIDProperties userLogins = new FileUserLoginIDProperties(usersFile);
+			FileMainAggregatedFullUserDescribe main = new FileMainAggregatedFullUserDescribe(OUTPUT_DIR,id);
+			System.out.println("Starting..."+GregorianCalendar.getInstance().getTime().toString());
+			Enumeration<String> usersLogin = userLogins.getKeys();
+			String userLogin;
+			try{
+				logger.info("Start time "+GregorianCalendar.getInstance().getTime().toString());
+				DataSerializer serializer = new FileDataSerializer(
+						OUTPUT_DIR+RelTypes.USER_NODE.name()+ID_SEPARATOR+id+OUTPUT_EXT,
+						OUTPUT_DIR+LINK_FILE+ID_SEPARATOR+id+OUTPUT_EXT);
+				List<String> logins = new LinkedList<String>();
+				UserService service = new UserService(GithubConnectionHelper.createConnection());
+				GithubDumperEntityDAO userDAO = new GithubUserDAOImpl(service, serializer);
+				while(usersLogin.hasMoreElements()){
+					try{
+						userLogin = usersLogin.nextElement();
+						logger.info("Processing user with login: "+userLogin);				
+						logins.add(userLogin);
+						Map<String, Object> params = new HashMap<String,Object>();
+						params.put(GithubDumperEntityDAO.ALL_USER_LOGIN_PARAM,logins);
+						userDAO.serialize(params);
+						params.clear();
+						params = null;
 
-					logger.info("\t...repositories of user with login: "+userLogin);
-					main.createRepos(userLogin);
-					//Create commits for repos
-					RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
+						logger.info("\t...repositories of user with login: "+userLogin);
+						main.createRepos(userLogin);
+						//Create commits for repos
+						RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
 
-					for(Repository repo:repositoryService.getRepositories(userLogin)){
-						try{	
-							logger.info("\t...issues of user with login: "+userLogin+" in repository "+repo.getId());
-							main.createIssues(userLogin, repo);
-							main.waitNext();
-							logger.info("\t...milestones of user with login: "+userLogin+" in repository "+repo.getId());
-							main.createMilestones(userLogin, repo);
-							main.waitNext();
-							logger.info("\t...commits of user with login: "+userLogin+" in repository "+repo.getId());
-							main.createCommits(userLogin, repo);
-							main.waitNext();
-							logger.info("\t...labels of user with login: "+userLogin+" in repository "+repo.getId());
-							main.createLabels(userLogin, repo);
-							main.waitNext();
-							logger.info("\t...downloads of user with login: "+userLogin+" in repository "+repo.getId());
-							main.createDownloads(userLogin, repo);
-							main.waitNext();
-							logger.info("\t...collaborators of user with login: "+userLogin+" in repository "+repo.getId());
-							main.createCollaborators(userLogin, repo);
-							main.waitNext();
-							repo = null;
-						}catch(Exception e){
-							logger.error("Exception describing a repository..."+e);
+						for(Repository repo:repositoryService.getRepositories(userLogin)){
+							try{	
+								logger.info("\t...issues of user with login: "+userLogin+" in repository "+repo.getId());
+								main.createIssues(userLogin, repo);
+								main.waitNext();
+								logger.info("\t...milestones of user with login: "+userLogin+" in repository "+repo.getId());
+								main.createMilestones(userLogin, repo);
+								main.waitNext();
+								//logger.info("\t...commits of user with login: "+userLogin+" in repository "+repo.getId());
+								//main.createCommits(userLogin, repo);
+								main.waitNext();
+								logger.info("\t...labels of user with login: "+userLogin+" in repository "+repo.getId());
+								main.createLabels(userLogin, repo);
+								main.waitNext();
+								logger.info("\t...downloads of user with login: "+userLogin+" in repository "+repo.getId());
+								main.createDownloads(userLogin, repo);
+								main.waitNext();
+								logger.info("\t...collaborators of user with login: "+userLogin+" in repository "+repo.getId());
+								main.createCollaborators(userLogin, repo);
+								main.waitNext();
+								repo = null;
+							}catch(Exception e){
+								logger.error("Exception describing a repository..."+e);
+							}
 						}
+						logger.info("End processing user with login: "+userLogin);
+						logins.clear();
+						userLogin = null;
+					}catch(Exception e){
+						logger.error("Exception describing user..."+e);
 					}
-					logger.info("End processing user with login: "+userLogin);
-					logins.clear();
-					userLogin = null;
-				}catch(Exception e){
-					logger.error("Exception describing user..."+e);
 				}
+			}catch(Exception e){
+				logger.error(e);
 			}
-		}catch(Exception e){
-			logger.error(e);
+
+			//Create repos
+
+			System.out.println(GregorianCalendar.getInstance().getTime().toString());
 		}
 
-		//Create repos
-
-		System.out.println(GregorianCalendar.getInstance().getTime().toString());
 
 	}
 
 	public void waitNext(){
 		try {
-			TimeUnit.MILLISECONDS.sleep(500);
+			TimeUnit.MILLISECONDS.sleep(2000);
 			System.gc();
 		} catch (InterruptedException e) {
 			//Handle exception
 		}
 	}
-	public void initRepositoryDAO(){
+	public void initRepositoryDAO(String outputDir,String id, String linkDir){
 		DataSerializer serializer = 
-				new FileDataSerializer(OUTPUT_DIR+RelTypes.REPO_NODE.name()+OUTPUT_EXT);
+				new FileDataSerializer(outputDir+RelTypes.REPO_NODE.name()+ID_SEPARATOR+id+OUTPUT_EXT,linkDir);
 		RepositoryService service = new RepositoryService(GithubConnectionHelper.createConnection());
 		this.repositoryDao = new GithubRepositoryDAOImpl(service, serializer, new RepoOwnerLinkCreator());
 	}
 
-	public void initCommitDAO(){
+	public void initCommitDAO(String outputDir,String id, String linkDir){
 		DataSerializer serializer = 
-				new FileDataSerializer(OUTPUT_DIR+RelTypes.COMMIT_NODE+OUTPUT_EXT);
+				new FileDataSerializer(outputDir+RelTypes.COMMIT_NODE+ID_SEPARATOR+id+OUTPUT_EXT,linkDir);
 		CommitService service = new CommitService(GithubConnectionHelper.createConnection());
 		this.commitDAO = new GithubRepositoryCommitDAOImpl(service, serializer, new CommitRepoLinkCreator());
 
 	}
 
-	public void initLabelDAO(){
+	public void initLabelDAO(String outputDir,String id, String linkDir){
 		DataSerializer serializer = 
-				new FileDataSerializer(OUTPUT_DIR+RelTypes.LABEL_NODE+OUTPUT_EXT);
+				new FileDataSerializer(outputDir+RelTypes.LABEL_NODE+ID_SEPARATOR+id+OUTPUT_EXT,linkDir);
 		LabelService service = new LabelService(GithubConnectionHelper.createConnection());
 		this.labelDAO = new GithubLabelDAOImpl(service, serializer, new LabelRepoLinkCreator());
 	}
 
-	public void initDownloadsDAO(){
+	public void initDownloadsDAO(String outputDir,String id, String linkDir){
 		DataSerializer serializer = 
-				new FileDataSerializer(OUTPUT_DIR+RelTypes.DOWNLOAD_NODE+OUTPUT_EXT);
+				new FileDataSerializer(outputDir+RelTypes.DOWNLOAD_NODE+ID_SEPARATOR+id+OUTPUT_EXT,linkDir);
 		DownloadService service = new DownloadService(GithubConnectionHelper.createConnection());
 		this.downloadsDAO = new GithubDownloadDAOImpl(service, serializer, new DownloadRepoLinkCreator());	
 	}
 
-	public void initIssuesDAO(){
+	public void initIssuesDAO(String outputDir,String id, String linkDir){
 		DataSerializer serializer = 
-				new FileDataSerializer(OUTPUT_DIR+RelTypes.ISSUE_NODE+OUTPUT_EXT);
+				new FileDataSerializer(outputDir+RelTypes.ISSUE_NODE+ID_SEPARATOR+id+OUTPUT_EXT,linkDir);
 		IssueService service = new IssueService(GithubConnectionHelper.createConnection());
 		this.issuesDAO = new GithubIssueDAOImpl(service, serializer, new IssueRepoLinkCreator());
 	}
 
-	public void initMilestonesDAO(){
+	public void initMilestonesDAO(String outputDir,String id, String linkDir){
 		DataSerializer serializer = 
-				new FileDataSerializer(OUTPUT_DIR+RelTypes.MILESTONE_NODE+OUTPUT_EXT);
+				new FileDataSerializer(outputDir+RelTypes.MILESTONE_NODE+ID_SEPARATOR+id+OUTPUT_EXT,linkDir);
 		MilestoneService service = new MilestoneService(GithubConnectionHelper.createConnection());
 		this.milestonesDAO = new GithubMilestoneDAOImpl(service, serializer, new MilestoneRepoLinkCreator());
 	}
 
 
-	private void initCollaboratorsDAO() {
+	private void initCollaboratorsDAO(String outputDir,String id, String linkDir) {
 		DataSerializer serializer = 
-				new FileDataSerializer(OUTPUT_DIR+RelTypes.COLLABORATOR_NODE+OUTPUT_EXT);
+				new FileDataSerializer(outputDir+RelTypes.COLLABORATOR_NODE+ID_SEPARATOR+id+OUTPUT_EXT,linkDir);
 		CollaboratorService service = new CollaboratorService(GithubConnectionHelper.createConnection());
 		this.collaboratorsDAO = new GithubCollaboratorDAOImpl(service, serializer);
-		
+
 	}
 
-	
+
 
 	public void createRepos(String login) throws Exception{
 		Map<String, Object> params = new HashMap<String,Object>();
@@ -246,7 +262,7 @@ public class FileMainAggregatedFullUserDescribe {
 		params = null;
 
 	}
-	
+
 	public void createCollaborators(String login, Repository repo) throws Exception{
 		Map<String, Object> params = new HashMap<String,Object>();
 		params.put(GithubDumperEntityDAO.REPO_CONSTANT_PARAM,repo);

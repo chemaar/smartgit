@@ -17,7 +17,7 @@ public class FileIssueDAOImplTest {
 	@Test
 	public void test() throws Exception {
 		String DUMP_FILE="issue-dump.txt";
-		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
+		DataSerializer serializer = new FileDataSerializer(DUMP_FILE,"FIXME");
 		IssueService service = new IssueService(GithubConnectionHelper.createConnection());
 		RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
 		GithubDumperEntityDAO dao = new GithubIssueDAOImpl(service, serializer);

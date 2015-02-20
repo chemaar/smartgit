@@ -20,7 +20,7 @@ public class FileDownloadDAOImplTest {
 	@Test
 	public void test() throws Exception {
 		String DUMP_FILE="download-dump.txt";
-		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
+		DataSerializer serializer = new FileDataSerializer(DUMP_FILE,"FIXME");
 		DownloadService service = new DownloadService(GithubConnectionHelper.createConnection());
 		RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
 		GithubDumperEntityDAO dao = new GithubDownloadDAOImpl(service, serializer);

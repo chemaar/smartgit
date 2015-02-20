@@ -21,7 +21,7 @@ public class FileRepositoryDAOImplTest {
 	@Test
 	public void test() throws Exception {
 		String DUMP_FILE="repository-dump.txt";
-		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
+		DataSerializer serializer = new FileDataSerializer(DUMP_FILE,"FIXME");
 		List<String> logins = new LinkedList<String>();
 		logins.add("chemaar");
 		RepositoryService service = new RepositoryService(GithubConnectionHelper.createConnection());

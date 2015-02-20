@@ -19,7 +19,7 @@ public class FileRepositoryCommitDAOImplTest {
 	@Test
 	public void test() throws Exception {
 		String DUMP_FILE="commit-dump.txt";
-		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
+		DataSerializer serializer = new FileDataSerializer(DUMP_FILE,"FIXME");
 		CommitService service = new CommitService(GithubConnectionHelper.createConnection());
 		RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
 		GithubDumperEntityDAO dao = new GithubRepositoryCommitDAOImpl(service, serializer);

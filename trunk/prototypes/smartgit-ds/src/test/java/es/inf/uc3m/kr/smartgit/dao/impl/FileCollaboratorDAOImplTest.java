@@ -17,7 +17,7 @@ public class FileCollaboratorDAOImplTest {
 	@Test
 	public void test() throws Exception {
 		String DUMP_FILE="collaborator-dump.txt";
-		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
+		DataSerializer serializer = new FileDataSerializer(DUMP_FILE,"FIXME");
 		CollaboratorService service = new CollaboratorService(GithubConnectionHelper.createConnection());
 		RepositoryService repositoryService = new RepositoryService(GithubConnectionHelper.createConnection());
 		GithubDumperEntityDAO dao = new GithubCollaboratorDAOImpl(service, serializer);

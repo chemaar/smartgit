@@ -18,12 +18,13 @@ import es.inf.uc3m.kr.smartgit.to.LinkTO;
 
 public class FileDataSerializer implements DataSerializer {
 
-	public static final String LINK_FILE = "LINKS";
 	protected static Logger logger = Logger.getLogger(FileDataSerializer.class);
 	private String filename;
+	private String linksFileName;
 
-	public FileDataSerializer(String filename){
+	public FileDataSerializer(String filename, String linksFileName){
 		this.filename = filename;
+		this.linksFileName = linksFileName;
 	}
 	
 	@Override
@@ -48,10 +49,7 @@ public class FileDataSerializer implements DataSerializer {
 			linksMaps.add(values);
 		}
 		
-		DumperSerializer.write(
-				FileMainAggregatedFullUserDescribe.OUTPUT_DIR+
-				LINK_FILE+FileMainAggregatedFullUserDescribe.OUTPUT_EXT,
-				linksMaps,LinkFields.values());
+		DumperSerializer.write(linksFileName,linksMaps,LinkFields.values());
 		
 	}
 

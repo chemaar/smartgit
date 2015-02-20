@@ -19,7 +19,7 @@ public class FileUserDAOImplTest {
 	@Test
 	public void test() throws Exception {
 		String DUMP_FILE="all-user-dump.txt";
-		DataSerializer serializer = new FileDataSerializer(DUMP_FILE);
+		DataSerializer serializer = new FileDataSerializer(DUMP_FILE,"FIXME");
 		List<String> logins = new LinkedList<String>();
 		logins.add("chemaar");
 		UserService service = new UserService(GithubConnectionHelper.createConnection());
